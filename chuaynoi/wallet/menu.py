@@ -1,11 +1,20 @@
-"""หน้ากระเป๋าแต้ม (ชุดแกนกลาง)"""
+"""หน้ากระเป๋าแต้ม (แกนกลาง)
+
+โชว์ยอดกับประวัติของผู้ใช้ที่ login อยู่ แล้วรอ Enter ก่อนกลับเมนูหลัก
+ดู: docs/05-contracts.md ข้อ 4
+"""
 
 from chuaynoi.ui import display
 from chuaynoi.wallet import service
 
 
 def screen_wallet(app):
-    """โชว์ยอดใช้ได้ ยอดที่กันไว้ กับประวัติ 10 รายการล่าสุดเป็นตาราง"""
+    """โชว์ยอดใช้ได้ ยอดกันไว้ และประวัติแต้มล่าสุด 10 รายการเป็นตาราง
+
+    คืน: None
+    แก้ data: ไม่แก้อะไร ไม่ save ไม่เขียน log
+    ดู: docs/05-contracts.md ข้อ 4
+    """
     student_id = app.current_user_id
     user = app.find_user(student_id)
     available, held = service.get_balance(app, student_id)

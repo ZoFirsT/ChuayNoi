@@ -1,8 +1,9 @@
-"""ค่าคงที่กับ rule ทั้งหมดของ ChuayNoi ทุกชุดใช้ไฟล์นี้ร่วมกัน
+"""ค่าคงที่กับ rule ของ ChuayNoi ที่ทุกชุดใช้ร่วมกัน (แกนกลาง)
 
-จะเปลี่ยน rule อะไร (เช่น แต้มเริ่มต้น) แก้ที่นี่ที่เดียวพอ ทุกไฟล์ import ค่าไปจากตรงนี้
-อย่าพิมพ์ตัวเลข rule ลงไปในโค้ดตรง ๆ ใช้ชื่อจากไฟล์นี้แทน เช่น config.START_POINTS
-ไฟล์นี้ไม่มี function เลยไม่นับเป็นงานของชุดไหน ถ้าจะแก้ทักในกลุ่มก่อนนะ
+ตัวเลข ตัวเลือก และ status อยู่ที่นี่ที่เดียว ไฟล์อื่น import ไปใช้ ไม่พิมพ์ตัวเลขลอย ๆ
+ไฟล์นี้ไม่มี function และไม่ใช่งานของชุด A กับชุด B ถ้าต้องเปลี่ยนค่า
+ให้เปิด Issue ตามขั้นตอนใน docs/05-contracts.md ข้อ 9 ก่อน
+ดู: docs/02-design.md หัวข้อ ข้อตกลงตอนเขียน code
 """
 
 import os
@@ -80,7 +81,7 @@ BANNED_WORDS = (
 # status ของประกาศ (HelpRequest)
 # ---------------------------------------------------------------------------
 REQ_OPEN = "OPEN"              # ยังเปิดรับผู้ช่วยอยู่
-REQ_CLOSED = "CLOSED"          # ปิดรับแล้ว แต่ยังมีงานรอยืนยัน
+REQ_CLOSED = "CLOSED"          # ปิดรับแล้ว แต่ยังมีงานที่ยังไม่ยืนยัน
 REQ_COMPLETED = "COMPLETED"    # ยืนยันงานครบทุกชิ้นแล้ว
 REQ_CANCELLED = "CANCELLED"    # ปิดรับตอนยังไม่มีใครรับ เลยคืนแต้มทั้งหมด
 REQUEST_STATUSES = (REQ_OPEN, REQ_CLOSED, REQ_COMPLETED, REQ_CANCELLED)
@@ -90,12 +91,12 @@ REQUEST_STATUSES = (REQ_OPEN, REQ_CLOSED, REQ_COMPLETED, REQ_CANCELLED)
 # ---------------------------------------------------------------------------
 ENG_ACCEPTED = "ACCEPTED"      # รับงานแล้ว กำลังทำอยู่
 ENG_SUBMITTED = "SUBMITTED"    # ส่งงานแล้ว รอผู้ขอยืนยัน
-ENG_REVISION = "REVISION"      # เจ้าของประกาศขอให้แก้ (Could)
+ENG_REVISION = "REVISION"      # ผู้ขอขอให้แก้ (Could)
 ENG_APPROVED = "APPROVED"      # ยืนยันแล้ว แต้มโอนไปแล้ว
 ENG_WITHDRAWN = "WITHDRAWN"    # ผู้ช่วยถอนตัว (Could)
 ENGAGEMENT_STATUSES = (ENG_ACCEPTED, ENG_SUBMITTED, ENG_REVISION, ENG_APPROVED, ENG_WITHDRAWN)
 
-# status ที่ยังจอง "ที่" ในประกาศอยู่ และแต้มยังถูกกันไว้
+# status ที่ยังจองที่และแต้มยังกันไว้ (APPROVED ก็จองที่ แต่แต้มโอนไปแล้ว เลยไม่อยู่ในนี้)
 ACTIVE_ENGAGEMENT_STATUSES = (ENG_ACCEPTED, ENG_SUBMITTED, ENG_REVISION)
 
 # state machine: จาก status นี้ไปต่อ status ไหนได้บ้าง

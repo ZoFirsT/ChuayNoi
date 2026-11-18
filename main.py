@@ -1,4 +1,4 @@
-"""ChuayNoi (ช่วยหน่อย): จุดเริ่มของโปรแกรม
+"""เปิดโปรแกรม ChuayNoi (ช่วยหน่อย) ด้วยการเรียก app.run() (จุดเริ่มโปรแกรม)
 
 run ด้วย  python main.py      (Windows)
           python3 main.py     (macOS / Linux)

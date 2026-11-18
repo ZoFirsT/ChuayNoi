@@ -1,9 +1,9 @@
-"""สมุดบัญชีแต้ม ไฟล์นี้ห้ามมี input/print (ชุดแกนกลาง)
+"""สมุดบัญชีแต้ม เพิ่มรายการแต้ม ดูยอด ดูประวัติ (แกนกลาง)
 
-เราไม่เก็บยอดคงเหลือไว้ตรง ๆ แต่เก็บเป็นรายการต่อท้ายไปเรื่อย ๆ แล้วคำนวณยอดใหม่ทุกครั้ง
-สิ่งที่ต้องจริงตลอด: ผลรวม (ใช้ได้ + กันไว้) ของทุกคน == config.START_POINTS x จำนวนผู้ใช้
-ชุด A กับชุด B เรียก function ในไฟล์นี้ ถ้าจะเปลี่ยนชื่อหรือ parameter ต้องบอกทีมก่อน
-รายละเอียดอยู่ใน docs/tasks/core.md
+ไม่เก็บยอดคงเหลือไว้ที่ไหน ยอดคือผลรวมของรายการใน transactions.csv
+แต้มรวมของทุกคน (ใช้ได้ + กันไว้) ต้องเท่ากับ config.START_POINTS × จำนวนผู้ใช้เสมอ
+ไฟล์นี้ไม่มี input() กับ print()
+ดู: docs/05-contracts.md ข้อ 2 และข้อ 6
 """
 
 import csv
@@ -15,9 +15,15 @@ from chuaynoi.core.models import Transaction
 
 
 def add_transaction(app, student_id, kind, d_available, d_held, request_id="", note=""):
-    """สร้างรายการแต้มใหม่ ใส่เข้า app.transactions แล้วเขียนต่อท้าย transactions.csv เลย
+    """เพิ่มรายการแต้ม 1 รายการ แล้วเขียนต่อท้าย transactions.csv ทันที
 
-    return Transaction ที่สร้าง ถ้า kind ไม่อยู่ใน config.TRANSACTION_KINDS ให้ raise ValueError
+    รับ: kind ต้องอยู่ใน config.TRANSACTION_KINDS, d_available กับ d_held
+        คือแต้มที่เปลี่ยน (+ เพิ่ม, - ลด), request_id ใส่ "" ถ้าไม่เกี่ยวกับประกาศ
+    คืน: Transaction ตัวที่เพิ่งสร้าง (รหัส T + 6 หลัก)
+    แก้ data: ต่อท้าย app.transactions และ transactions.csv ไม่ต้องรอ save_all()
+    error: raise ValueError ถ้า kind ไม่ถูก (ตอนนั้นยังไม่แก้อะไร)
+        ถ้าเปิดไฟล์ไม่ได้ OSError จะหลุดออกไป และรายการค้างอยู่ใน app.transactions แล้ว
+    ดู: docs/05-contracts.md ข้อ 2
     """
     if kind not in config.TRANSACTION_KINDS:
         raise ValueError(f"kind ต้องอยู่ใน {config.TRANSACTION_KINDS} แต่เจอ {kind}")
@@ -42,7 +48,13 @@ def add_transaction(app, student_id, kind, d_available, d_held, request_id="", n
 
 
 def get_balance(app, student_id):
-    """return tuple (available, held) ซึ่งก็คือผลรวม d_available กับ d_held ทุกรายการของคนนี้"""
+    """รวมแต้มของนักศึกษาคนหนึ่งจากรายการใน app.transactions
+
+    รับ: student_id รหัสนักศึกษา
+    คืน: tuple (available, held) เป็น int ผลรวม d_available กับ d_held ของคนนี้
+    แก้ data: ไม่แก้อะไร
+    ดู: docs/05-contracts.md ข้อ 2
+    """
     available = 0
     held = 0
     for txn in app.transactions:
@@ -53,7 +65,7 @@ def get_balance(app, student_id):
 
 
 def list_history(app, student_id, limit=10):
-    """return list ของ Transaction ของคนนี้ เรียงล่าสุดขึ้นก่อน ไม่เกิน limit รายการ (ฟังก์ชันช่วย)"""
+    """เอารายการแต้มของนักศึกษาคนนี้ เรียงล่าสุดก่อน ไม่เกิน limit รายการ คืน list ของ Transaction (function ช่วย)"""
     history = []
     for txn in app.transactions:
         if txn.student_id == student_id:
