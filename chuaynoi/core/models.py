@@ -24,7 +24,7 @@ class User:
         self.created_at = created_at
 
     def to_row(self):
-        return[
+        return [
             self.student_id,
             self.name,
             self.faculty,
@@ -43,11 +43,7 @@ class User:
             skills = row["skills"].split(config.SKILL_SEPARATOR)
 
         return User(
-            row["student_id"],
-            row["name"],
-            row["faculty"],
-            skills,
-            row["created_at"]
+            row["student_id"], row["name"], row["faculty"], skills, row["created_at"]
         )
 
 
@@ -87,7 +83,10 @@ class HelpRequest:
         """นับว่าที่ถูกใช้ไปกี่ที่แล้ว (นับผู้ช่วยของประกาศนี้ที่ยังทำอยู่หรือยืนยันแล้ว คนที่ถอนตัวไม่นับ)"""
         count = 0
         for e in engagements:
-            if e.request_id == self.request_id and (e.status in config.ACTIVE_ENGAGEMENT_STATUSES or e.status == config.ENG_APPROVED):
+            if e.request_id == self.request_id and (
+                e.status in config.ACTIVE_ENGAGEMENT_STATUSES
+                or e.status == config.ENG_APPROVED
+            ):
                 count += 1
         return count
 
@@ -214,7 +213,7 @@ class Transaction:
         self.note = note
 
     def to_row(self):
-        return[
+        return [
             self.txn_id,
             self.created_at,
             self.student_id,
