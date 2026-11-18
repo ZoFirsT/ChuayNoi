@@ -28,6 +28,7 @@ python main.py
 | [docs/02-design.md](docs/02-design.md) | ก่อนเริ่มเขียน code |
 | [docs/03-workflow.md](docs/03-workflow.md) | ตอน setup ครั้งแรก และทุกครั้งที่จะส่งงาน |
 | [docs/tasks/](docs/tasks/README.md) | ตอนเลือกชุดงาน และดูว่าตัวเองต้องทำอะไร |
+| [docs/ai/](docs/ai/README.md) | ตอนจะให้ AI ช่วย (มีคู่มือของแต่ละชุดไว้ให้ AI อ่าน) |
 | [docs/ai-log.md](docs/ai-log.md) | ทุกครั้งที่ใช้ AI |
 
 ## โครงสร้าง folder
@@ -46,6 +47,7 @@ chuaynoi/
 sample_data/         ข้อมูลตัวอย่าง
 tools/reset_data.py  รีเซ็ตข้อมูลสำหรับทดสอบ
 docs/                เอกสารของทีม
+AGENTS.md            ให้ AI ใน editor อ่านก่อนช่วยงาน
 ```
 
 ## ทีม
