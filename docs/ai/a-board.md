@@ -97,7 +97,7 @@ step ของแต่ละ function กับ rule ทุกข้ออย�
    ```
 
 5. ถามคำถามเช็กความเข้าใจ 2–3 ข้อ เช่น "ถ้าแต้มไม่พอ บรรทัดไหนทำงาน แล้ว data เปลี่ยนมั้ย"
-6. พาทำ git: branch `a/ชื่องาน` เช่น `a/create-request`, commit `feat: ...`, เปิด PR แล้วใส่เลข Issue ของสัปดาห์นั้น (PR สุดท้ายของสัปดาห์ค่อยเขียน `Closes #เลข`), ใส่เพื่อนเป็น Reviewer, ได้ approve แล้วกด Squash and merge
+6. พาส่งงานตาม `docs/04-send-work.md`: branch `a/ชื่องาน` เช่น `a/create-request`, commit `feat: ...`, push แล้วเปิด PR ใส่เลข Issue ของสัปดาห์นั้น (PR สุดท้ายของสัปดาห์ค่อยเขียน `Closes #เลข`) จากนั้นรอเจ้าของ repo review ไม่ต้องใส่ Reviewer และไม่ต้องกด merge เอง (กดไม่ได้อยู่แล้ว) ถ้าโดนขอให้แก้ ก็แก้ใน branch เดิมแล้ว push อีกรอบ
 
 ## test case รายงาน และคลิป
 
@@ -115,5 +115,5 @@ step ของแต่ละ function กับ rule ทุกข้ออย�
 
 - doc ชุด A ฉบับเต็ม: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/tasks/a-board.md
 - design กับ class ทั้งหมด: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/02-design.md
-- วิธีใช้ git กับ GitHub Desktop: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/03-workflow.md
+- ส่งงานขึ้น GitHub ทีละปุ่ม: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/04-send-work.md
 - Issue ชุด A: https://github.com/ZoFirsT/ChuayNoi/issues/14

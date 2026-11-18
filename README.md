@@ -27,6 +27,7 @@ python main.py
 | [docs/01-overview.md](docs/01-overview.md) | อยากรู้ว่าเราจะทำอะไรกัน |
 | [docs/02-design.md](docs/02-design.md) | ก่อนเริ่มเขียน code |
 | [docs/03-workflow.md](docs/03-workflow.md) | ตอน setup ครั้งแรก และทุกครั้งที่จะส่งงาน |
+| [docs/04-send-work.md](docs/04-send-work.md) | เขียน code เสร็จแล้ว ส่งขึ้น GitHub ทีละปุ่ม |
 | [docs/tasks/](docs/tasks/README.md) | ตอนเลือกชุดงาน และดูว่าตัวเองต้องทำอะไร |
 | [docs/ai/](docs/ai/README.md) | ตอนจะให้ AI ช่วย (มีคู่มือของแต่ละชุดไว้ให้ AI อ่าน) |
 | [docs/ai-log.md](docs/ai-log.md) | ทุกครั้งที่ใช้ AI |

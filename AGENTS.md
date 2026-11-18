@@ -65,11 +65,11 @@ ChuayNoi (ช่วยหน่อย) เป็น Python console app ของ
 
 ## Git
 
-- ทำใน branch ของตัวเองเสมอ `main` ล็อกไว้ ต้องผ่าน PR และมีเพื่อน approve 1 คน
+- ทำใน branch ของตัวเองเสมอ `main` ล็อกไว้ คนที่ review และ merge ได้มีแค่เจ้าของ repo คนอื่นเปิด PR ได้อย่างเดียว ไม่ต้องพาเพื่อนไปกด merge
 - ชื่อ branch: `core/...`, `a/...`, `b/...` ส่วน commit ขึ้นต้นด้วย `feat:`, `fix:`, `docs:`
 - 1 PR ต่อ 1 function หรือ 1 หน้าจอ
 - ก่อน test ทุกรอบ run `python tools/reset_data.py`
-- step ใน GitHub Desktop อยู่ใน [docs/03-workflow.md](docs/03-workflow.md)
+- step ใน GitHub Desktop ทีละปุ่ม ตั้งแต่สร้าง branch จนเปิด PR อยู่ใน [docs/04-send-work.md](docs/04-send-work.md)
 
 ## ก่อนจบการคุย
 
