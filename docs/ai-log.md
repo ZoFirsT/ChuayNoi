@@ -65,3 +65,15 @@ copy block ข้างล่างไปต่อท้าย file แล้ว
 | ตัวอย่าง Prompt | "check all code in repo" |
 | สรุปที่นำมาใช้ | แก้ `tools/reset_data.py` ให้ขึ้น `[!]` แทน error ตอน copy file ไม่ได้ (เช่น เปิด file ค้างไว้ใน Excel) และเขียนวิธีเรียก `app.next_id` ใน `docs/tasks/core.md` ให้ชัดขึ้น |
 | วิธีตรวจสอบ | ทุก file ผ่าน syntax ของ Python 3.10, import ครบ 22 module, ลองล็อก file ใน `data/` แล้ว run `reset_data.py` ได้ `[!]` ไม่มี Traceback, ชื่อและจำนวน parameter ใน doc ตรงกับโค้ดทุกจุด |
+
+### #4: ให้ AI ช่วย commit, push และเปิด PR ของงานแกนกลาง
+
+| ช่อง | รายละเอียด |
+| --- | --- |
+| วันที่ | 18 พ.ย. 2569 |
+| ผู้ใช้ | แกนกลาง |
+| เครื่องมือ | Claude (Claude Code) |
+| วัตถุประสงค์ | พอเขียนโค้ดเสร็จและ test ผ่านแล้ว ให้ AI เช็กทั้งไฟล์อีกรอบ แล้วรันคำสั่ง git ให้ คือ commit, push, เปิด PR และสร้าง branch ใหม่จาก `main` ล่าสุดหลัง merge ทำไป 3 รอบ ได้ `feat: models` (#19), `feat: storage` (#20), `feat: wallet` (#21) |
+| ตัวอย่าง Prompt | "commit pr เลย" และ "Merge แล้ว ไปต่อ storage" |
+| สรุปที่นำมาใช้ | ใช้คำสั่ง git/gh ที่ AI รันให้ ข้อความ commit `feat: ...` กับคำอธิบาย PR ที่ AI ร่างจากผล test (ติ๊ก checklist ให้ 3 ข้อที่เช็กได้จากเครื่อง ส่วนข้อ "อธิบายโค้ดได้เอง" กับข้อ ai-log ติ๊กเอง) AI ไม่ได้แก้โค้ดในไฟล์ ยกเว้นลบบรรทัด comment โค้ดเก่า 1 บรรทัดใน `change_status` ก่อน commit models (ไม่เปลี่ยน logic) ส่วนการ merge กด Squash and merge เองบน GitHub |
+| วิธีตรวจสอบ | รัน test ของแต่ละขั้นใน python3 ตามที่ AI ให้ไว้ แล้วให้ AI รันซ้ำทั้งไฟล์ ผ่าน C1, C2, C3, C4, C5, C6, C8, C9, C12 บางขั้น (S5, W2, W3) AI เจอชื่อค่าใน config ผิดตอนเช็ก เลยแก้เองแล้วให้เช็กใหม่จนผ่าน ก่อนกด merge เปิดแท็บ Files changed ดูว่าแก้แค่ไฟล์เดียวและตรงกับที่เขียนเอง |
