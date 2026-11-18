@@ -19,14 +19,44 @@ def add_transaction(app, student_id, kind, d_available, d_held, request_id="", n
 
     return Transaction ที่สร้าง ถ้า kind ไม่อยู่ใน config.TRANSACTION_KINDS ให้ raise ValueError
     """
-    raise NotImplementedError("TODO(แกนกลาง): add_transaction")
+    if kind not in config.TRANSACTION_KINDS:
+        raise ValueError(f"kind ต้องอยู่ใน {config.TRANSACTION_KINDS} แต่เจอ {kind}")
+
+    txn_id = app.next_id("T", [t.txn_id for t in app.transactions], 6)
+
+    created_at = datetime.now().strftime(config.TIME_FORMAT)
+    txn = Transaction(
+        txn_id, created_at, student_id, kind, d_available, d_held, request_id, note
+    )
+    app.transactions.append(txn)
+
+    path = config.TRANSACTIONS_FILE
+    is_new_file = not os.path.exists(path) or os.path.getsize(path) == 0
+    with open(path, "a", newline="", encoding=config.CSV_ENCODING) as file:
+        writer = csv.writer(file)
+        if is_new_file:
+            writer.writerow(config.TRANSACTION_FIELDS)
+        writer.writerow(txn.to_row())
+
+    return txn
 
 
 def get_balance(app, student_id):
     """return tuple (available, held) ซึ่งก็คือผลรวม d_available กับ d_held ทุกรายการของคนนี้"""
-    raise NotImplementedError("TODO(แกนกลาง): get_balance")
+    available = 0
+    held = 0
+    for txn in app.transactions:
+        if txn.student_id == student_id:
+            available += txn.d_available
+            held += txn.d_held
+    return available, held
 
 
 def list_history(app, student_id, limit=10):
     """return list ของ Transaction ของคนนี้ เรียงล่าสุดขึ้นก่อน ไม่เกิน limit รายการ (ฟังก์ชันช่วย)"""
-    raise NotImplementedError("TODO(แกนกลาง): list_history")
+    history = []
+    for txn in app.transactions:
+        if txn.student_id == student_id:
+            history.append(txn)
+    history.reverse()  # เรียงล่าสุดขึ้นก่อน
+    return history[:limit]
