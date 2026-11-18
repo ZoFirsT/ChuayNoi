@@ -47,7 +47,7 @@ ChuayNoi (ช่วยหน่อย) เป็น Python console app ของ
 - commit ขึ้นต้นด้วย `feat:` / `fix:` / `docs:` เช่น `feat: input_int`
 - เปิด PR แล้วใส่เพื่อนอีกคนเป็น Reviewer ต้องมีคน approve 1 คนถึงจะ merge ได้ แล้วกด Squash and merge
 - ก่อน test ทุกรอบ run `python tools/reset_data.py` ก่อน ผลจะได้ตรงกับ test case ใน doc
-- ใช้ AI ได้ แต่ต้องอธิบาย code ของตัวเองได้ทุกบรรทัด (อาจารย์ถามแน่) และจดลง [ai-log.md](ai-log.md) ทุกครั้งที่ใช้
+- ใช้ AI ได้ แต่ต้องอธิบาย code ของตัวเองได้ทุกบรรทัด (อาจารย์ถามแน่) และจดลง [ai-log.md](ai-log.md) ทุกครั้งที่ใช้ ก่อนเริ่มคุยให้ส่งคู่มือของชุดตัวเองใน [ai/](ai/README.md) ให้ AI อ่านก่อน มันจะได้รู้ว่าเราอยู่ตรงไหนและต้องทำอะไรต่อ
 
 ที่เหลือละเอียดอยู่ใน [03-workflow.md](03-workflow.md)
 
