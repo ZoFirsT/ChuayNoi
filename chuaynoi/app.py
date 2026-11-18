@@ -3,7 +3,6 @@
 รายละเอียดอยู่ใน docs/tasks/core.md
 """
 
-from chuaynoi import config
 from chuaynoi.accounts import menu as accounts_menu
 from chuaynoi.board import menu as board_menu
 from chuaynoi.core import storage
@@ -54,15 +53,6 @@ def run():
         print("[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน")
 
 
-def print_menu(options, zero_label):
-    """พิมพ์ตัวเลือกเป็นข้อ ๆ [1] ถึง [n] ปิดท้ายด้วย [0] กับเส้นคั่น"""
-    
-    for i in range(len(options)):
-        print(f" [{i + 1}] {options[i]}")
-    print(f" [0] {zero_label}")
-    print("-" * config.SCREEN_WIDTH)
-
-
 def start_screen(app):
     """หน้าแรก: [1] เข้าสู่ระบบ [2] สมัคร [0] ออก
 
@@ -72,7 +62,7 @@ def start_screen(app):
         display.print_header(
             "ChuayNoi | หน้าแรก", "ช่วยหน่อย: บอร์ดขอความช่วยเหลือ จ่ายกันด้วยแต้มน้ำใจ"
         )
-        print_menu(START_MENU, "ออกจากโปรแกรม")
+        display.print_menu(START_MENU, "ออกจากโปรแกรม")
         choice = inputs.input_int(
             f"เลือกเมนู (0-{len(START_MENU)}): ", 0, len(START_MENU)
         )
@@ -99,7 +89,7 @@ def main_menu(app):
             f"ChuayNoi | เมนูหลัก    ผู้ใช้: {user.name} ({user.student_id})",
             f"ใช้ได้ {available} | กันไว้ {held}",
         )
-        print_menu(MAIN_MENU, "บันทึกและออก")
+        display.print_menu(MAIN_MENU, "บันทึกและออก")
         choice = inputs.input_int(f"เลือกเมนู (0-{len(MAIN_MENU)}): ", 0, len(MAIN_MENU))
 
         if choice == 0:
