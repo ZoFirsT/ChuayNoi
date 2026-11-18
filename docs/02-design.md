@@ -1,32 +1,32 @@
-# 02: ระบบทำงานยังไง
+# ระบบทำงานยังไง
 
-อ่านอันนี้ก่อนเริ่มเขียน code นะ ทุกชุดต้องใช้ชื่อ class, attribute และ function ตามที่เขียนไว้ในนี้ ถ้าจะเปลี่ยนอะไรต้องบอกทีมก่อน
+ชื่อ class, attribute และ function ที่เขียนไว้ในหน้านี้ใช้ร่วมกันทุกชุด ก่อนเริ่มเขียน code อ่านหน้านี้ก่อน ถ้าจะเปลี่ยนชื่อต้องเปิด Issue ก่อน (ดู `docs/05-contracts.md` ข้อ 9) ส่วนสัญญาว่าใครเรียกใครแล้วได้อะไรกลับมา อยู่ใน `docs/05-contracts.md`
 
-## 1. โครงสร้าง folder
+## โครงสร้าง folder
 
 ```text
 ChuayNoi/
 ├── main.py                  จุดเริ่มโปรแกรม (python main.py)
-├── chuaynoi/                โค้ดทั้งหมดอยู่ในแพ็กเกจนี้
-│   ├── app.py               เมนูหลัก เชื่อมทุกฟีเจอร์                 แกนกลาง
-│   ├── config.py            ค่าคงที่และกติกาทั้งหมด                    ใช้ร่วมกัน
+├── chuaynoi/                code ทั้งหมดอยู่ใน package นี้
+│   ├── app.py               หน้าแรกกับเมนูหลัก เชื่อมทุก feature        แกนกลาง
+│   ├── config.py            ค่าคงที่และ rule ทั้งหมด                    ใช้ร่วมกัน
 │   ├── core/
-│   │   ├── models.py        คลาสข้อมูล 4 คลาส                         แกนกลาง
-│   │   └── storage.py       AppData + อ่าน/เขียนไฟล์                  แกนกลาง
+│   │   ├── models.py        class ข้อมูล 4 class                        แกนกลาง
+│   │   └── storage.py       AppData กับอ่าน/เขียนไฟล์                  แกนกลาง
 │   ├── ui/
-│   │   ├── inputs.py        รับและตรวจข้อมูลที่ผู้ใช้พิมพ์               ชุด B
-│   │   └── display.py       ตารางและหัวจอ รองรับภาษาไทย              แกนกลาง
-│   ├── accounts/            สมัคร / เข้าสู่ระบบ                       ชุด B
+│   │   ├── inputs.py        รับและตรวจสิ่งที่ผู้ใช้พิมพ์                  ชุด B
+│   │   └── display.py       ตารางกับหัวจอที่รองรับภาษาไทย               แกนกลาง
+│   ├── accounts/            สมัครและ login                              ชุด B
 │   │   ├── service.py
 │   │   └── menu.py
-│   ├── wallet/              แต้มน้ำใจ                                แกนกลาง
+│   ├── wallet/              แต้มน้ำใจ                                   แกนกลาง
 │   │   ├── service.py
 │   │   └── menu.py
-│   ├── board/               ประกาศและการช่วยงาน                      ชุด A
+│   ├── board/               ประกาศและการช่วยงาน                         ชุด A
 │   │   ├── service.py
 │   │   ├── search.py
 │   │   └── menu.py
-│   └── reports/             สถิติและส่งออก .txt                       ชุด B
+│   └── reports/             สถิติและส่งออก .txt                         ชุด B
 │       ├── service.py
 │       └── menu.py
 ├── sample_data/             ข้อมูลตัวอย่าง (ขึ้น Git)
@@ -36,58 +36,36 @@ ChuayNoi/
 └── docs/                    เอกสารของทีม
 ```
 
-ทุก feature จะมี 2 ไฟล์เสมอ
+ทุก feature มี 2 ไฟล์เสมอ
 
 | ไฟล์ | ทำอะไร | ห้ามทำอะไร |
 | --- | --- | --- |
-| `service.py` | rule กับการแก้ data รับค่าเข้ามาแล้ว return ค่าออกไป | ห้ามใช้ `input()` กับ `print()` |
-| `menu.py` | ส่วนหน้าจอ: ถามผู้ใช้, เรียก service, แสดงผล แล้วค่อย save ไฟล์ | ห้ามเขียน rule ซ้ำ ให้เรียก service เอา |
+| `service.py` | rule กับการแก้ data รับค่าเข้ามาแล้วคืนค่าออกไป | `input()` กับ `print()` |
+| `menu.py` | หน้าจอ: ถามผู้ใช้ เรียก service แสดงผล แล้ว save ไฟล์ | เขียน rule ซ้ำ ให้เรียก service แทน |
 
-ที่แยกแบบนี้เพราะ service จะ test ใน Python shell ได้เลย ไม่ต้องมานั่งพิมพ์ตอบเมนู อีกอย่างคือคนทำหน้าจอกับคนทำ rule จะได้ไม่ต้องแก้ไฟล์เดียวกัน
+แยกแบบนี้เพราะ service ลองใน Python shell ได้เลย ไม่ต้องพิมพ์ตอบเมนู และคนทำหน้าจอกับคนทำ rule ไม่ต้องแก้ไฟล์เดียวกัน ชั้นไหน import อะไรได้ ดูตารางใน `docs/05-contracts.md` ข้อ 1
 
-## 2. ใครเรียกใคร
+## data ไหลยังไง
 
-```mermaid
-flowchart TD
-    MAIN["main.py"] --> APP["app.py<br/>เมนูหลัก"]
-    APP --> AM["accounts/menu"]
-    APP --> BM["board/menu"]
-    APP --> WM["wallet/menu"]
-    APP --> RM["reports/menu"]
-    AM --> AS["accounts/service"]
-    BM --> BS["board/service<br/>board/search"]
-    WM --> WS["wallet/service"]
-    RM --> RS["reports/service"]
-    AS --> WS
-    BS --> WS
-    AM & BM & WM & RM --> UI["ui/inputs<br/>ui/display"]
-    AS & BS & WS & RS --> CORE["core/models<br/>core/storage"]
-```
-
-- แต้มจะเปลี่ยนตรงไหนก็ตาม **ต้องผ่าน `wallet/service.add_transaction()` เท่านั้น** ห้ามไปคิดแต้มเองที่อื่น
-- ทุกหน้าจอต้องถามผู้ใช้ผ่าน `ui/inputs` ห้ามเรียก `input()` ตรง ๆ ในเมนู
-
-## 3. data ไหลยังไง
-
-1. ตอนเปิดโปรแกรม `storage.load_all()` จะอ่าน CSV ทั้ง 4 ไฟล์มาเก็บไว้ใน `app` (เป็น object `AppData`)
-2. ระหว่างใช้งาน ทุก function อ่านและแก้ data ผ่าน `app` อย่าง `app.requests` ก็คือ list ของประกาศทั้งหมด
-3. พอทำรายการสำเร็จ เมนูจะเรียก `storage.save_all(app)` เพื่อเขียนทับไฟล์ และเรียก `storage.append_log(...)` เพื่อเพิ่มบรรทัดใน log
-4. ส่วนแต้ม `add_transaction()` จะเขียนต่อท้าย `transactions.csv` ทันทีเลย ไม่ต้องรอ `save_all`
-
-ตัวอย่างการใช้ `app` ใน code
+1. ตอนเปิดโปรแกรม `storage.load_all()` อ่าน CSV ทั้ง 4 ไฟล์มาเก็บไว้ใน `app` (object `AppData`)
+2. ระหว่างใช้งาน ทุก function อ่านและแก้ data ผ่าน `app` เช่น `app.requests` คือ list ของประกาศทั้งหมด
+3. พอทำรายการสำเร็จ หน้าจอเรียก `storage.save_all(app)` เพื่อเขียนทับไฟล์ แล้วเรียก `storage.append_log(...)` เพิ่มบรรทัดใน log
+4. ส่วนแต้ม `add_transaction()` เขียนต่อท้าย `transactions.csv` ทันที ไม่ต้องรอ `save_all`
 
 ```python
 for request in app.requests:          # วนดูประกาศทุกอัน
     if request.status == config.REQ_OPEN:
         print(request.title, request.reward)
 
-user = app.find_user("9990000001")    # หาผู้ใช้จากรหัส (ไม่พบได้ None)
+user = app.find_user("9990000001")    # หาผู้ใช้จากรหัส ไม่พบได้ None
 available, held = get_balance(app, user.student_id)
 ```
 
-## 4. คลาสและ attribute
+## คลาสและ attribute
 
-**AppData** (`core/storage.py`) เก็บข้อมูลทั้งหมดตอนโปรแกรมรันอยู่
+### AppData
+
+อยู่ใน `core/storage.py` เก็บ data ทั้งหมดตอนโปรแกรมรัน
 
 | attribute | type | คืออะไร |
 | --- | --- | --- |
@@ -95,12 +73,14 @@ available, held = get_balance(app, user.student_id)
 | `requests` | list ของ `HelpRequest` | ประกาศทุกอัน |
 | `engagements` | list ของ `Engagement` | ผู้ช่วยทุกคนในทุกประกาศ |
 | `transactions` | list ของ `Transaction` | รายการแต้มทุกรายการ |
-| `current_user_id` | str | รหัสนักศึกษาของคนที่ login อยู่ (`""` คือยังไม่มีใคร login) |
+| `current_user_id` | str | รหัสนักศึกษาของคนที่ login อยู่ `""` คือยังไม่มีใคร |
 | `skipped_rows` | int | จำนวนแถวเสียที่ข้ามไปตอน load |
 
-method ที่มี: `find_user(student_id)`, `find_request(request_id)`, `find_engagement(engagement_id)` จะ return object หรือ `None` ส่วน `next_id(prefix, existing_ids, digits)` ใช้สร้างรหัสถัดไป
+method: `find_user(student_id)`, `find_request(request_id)`, `find_engagement(engagement_id)` คืน object หรือ `None` ส่วน `next_id(prefix, existing_ids, digits)` สร้างรหัสถัดไป
 
-**User** คือนักศึกษาหนึ่งคน
+### User
+
+นักศึกษาหนึ่งคน
 
 | attribute | type | ตัวอย่าง |
 | --- | --- | --- |
@@ -110,13 +90,15 @@ method ที่มี: `find_user(student_id)`, `find_request(request_id)`, `fi
 | `skills` | list ของ str | `["Python", "ออกแบบสไลด์"]` |
 | `created_at` | str | `"2026-11-20 09:00"` |
 
-**HelpRequest** คือประกาศหนึ่งอัน
+### HelpRequest
+
+ประกาศหนึ่งอัน
 
 | attribute | type | ตัวอย่าง |
 | --- | --- | --- |
 | `request_id` | str | `"R0001"` |
 | `owner_id` | str | `"9990000001"` |
-| `title` | str (5–60 ตัวอักษร) | `"ช่วยทดสอบเว็บร้านกาแฟ"` |
+| `title` | str (5–60 ตัวอักษร) | `"ช่วยทดสอบเว็บร้านกาแฟของโปรเจกต์จบ"` |
 | `detail` | str (0–300 ตัวอักษร) | |
 | `category` | str (อยู่ใน `config.CATEGORIES`) | `"ทดสอบเว็บ/แอป"` |
 | `reward` | int (5–100) | `15` |
@@ -125,9 +107,11 @@ method ที่มี: `find_user(student_id)`, `find_request(request_id)`, `fi
 | `status` | str (อยู่ใน `config.REQUEST_STATUSES`) | `"OPEN"` |
 | `created_at` | str | |
 
-method: `total_cost()` คือ reward × slots ส่วน `count_used_slots(engagements)` คือจำนวนที่ที่ถูกใช้ไปแล้ว
+method: `total_cost()` คือ `reward * slots` ส่วน `count_used_slots(engagements)` คือจำนวน slot ที่ใช้ไปแล้ว นับ engagement ของประกาศนี้ที่ status อยู่ใน `config.ACTIVE_ENGAGEMENT_STATUSES` (`ACCEPTED`, `SUBMITTED`, `REVISION`) รวมกับ `APPROVED`
 
-**Engagement** คือผู้ช่วยหนึ่งคนในประกาศหนึ่งอัน
+### Engagement
+
+ผู้ช่วยหนึ่งคนในประกาศหนึ่งอัน
 
 | attribute | type | ตัวอย่าง |
 | --- | --- | --- |
@@ -139,9 +123,11 @@ method: `total_cost()` คือ reward × slots ส่วน `count_used_slots(
 | `revisions` | int | `0` |
 | `updated_at` | str | |
 
-method: `change_status(new_status)` เปลี่ยน status ตาม rule ถ้าเปลี่ยนไม่ได้จะ `raise ValueError`
+method: `change_status(new_status)` เปลี่ยน status ตาม rule ถ้าเปลี่ยนไม่ได้ raise `ValueError`
 
-**Transaction** คือรายการแต้มหนึ่งรายการ
+### Transaction
+
+รายการแต้มหนึ่งรายการ
 
 | attribute | type | ตัวอย่าง |
 | --- | --- | --- |
@@ -154,35 +140,62 @@ method: `change_status(new_status)` เปลี่ยน status ตาม rule 
 | `request_id` | str (`""` ได้) | `"R0001"` |
 | `note` | str | `"กันแต้ม 15 x 3 คน"` |
 
-## 5. ไฟล์ data
+## ไฟล์ data
 
 | ไฟล์ | เก็บอะไร | เขียนแบบไหน |
 | --- | --- | --- |
 | `data/users.csv` | ผู้ใช้ | เขียนทับทั้งไฟล์ (`"w"`) |
 | `data/requests.csv` | ประกาศ | เขียนทับทั้งไฟล์ (`"w"`) |
 | `data/engagements.csv` | ผู้ช่วยในแต่ละประกาศ | เขียนทับทั้งไฟล์ (`"w"`) |
-| `data/transactions.csv` | รายการแต้ม | append ต่อท้าย (`"a"`) ห้ามแก้รายการเก่า |
-| `data/activity_log.txt` | log ทุก action | append ต่อท้าย (`"a"`) |
-| `reports/summary_*.txt` | รายงานที่ export ออกมา | เขียนใหม่ทุกครั้ง (`"w"`) |
+| `data/transactions.csv` | รายการแต้ม | ต่อท้าย (`"a"`) ไม่แก้รายการเก่า |
+| `data/activity_log.txt` | log ทุก action (รูปแบบอยู่ใน `docs/05-contracts.md` ข้อ 5) | ต่อท้าย (`"a"`) |
+| `reports/summary_*.txt` | รายงานที่ส่งออก | เขียนใหม่ทุกครั้ง (`"w"`) |
 
-- column ของแต่ละไฟล์อยู่ใน `config.py` (`USER_FIELDS`, `REQUEST_FIELDS` และตัวอื่น ๆ) เรียงลำดับเหมือนตาราง attribute ข้างบน
-- เปิด CSV ด้วย `encoding="utf-8-sig"` กับ `newline=""` ทุกครั้ง Excel จะได้อ่านภาษาไทยออก และไม่มีบรรทัดว่างแทรกมา
-- sample data ใน `sample_data/` เป็นข้อมูลสมมติ รหัสนักศึกษาขึ้นต้นด้วย `999`
+- column ของแต่ละไฟล์อยู่ใน `config.py` (`USER_FIELDS`, `REQUEST_FIELDS`, `ENGAGEMENT_FIELDS`, `TRANSACTION_FIELDS`) เรียงเหมือนตาราง attribute ด้านบน
+- เปิด CSV ด้วย `encoding=config.CSV_ENCODING` (ค่าคือ `"utf-8-sig"`) กับ `newline=""` ทุกครั้ง Excel จะอ่านภาษาไทยออก และไม่มีบรรทัดว่างแทรก
+- `skills` ใน CSV คั่นด้วย `config.SKILL_SEPARATOR` (`;`)
+- วันที่เวลาใน data กับบนจอเป็นรูปแบบ `config.TIME_FORMAT` ปี ค.ศ. เช่น `2026-11-20 09:00` ส่วนวันที่ในเอกสารเขียนปี พ.ศ. เช่น 21 ธ.ค. 2569
 
-## 6. Status
+## ข้อมูลตัวอย่าง
 
-ประกาศ (HelpRequest) เปลี่ยน status แบบนี้
+`sample_data/` เป็นข้อมูลสมมติ ใช้เป็นจุดเริ่มของทุก test รหัสนักศึกษาขึ้นต้นด้วย `999` และ `python tools/reset_data.py` copy ไปไว้ที่ `data/`
+
+| รหัส | ชื่อ | ใช้ได้ | กันไว้ |
+| --- | --- | ---: | ---: |
+| `9990000001` | มะลิ ใจดี | 55 | 30 |
+| `9990000002` | ต้นกล้า รักเรียน | 95 | 20 |
+| `9990000003` | ฟ้าใส สดใส | 100 | 0 |
+| `9990000004` | ภูผา มั่นคง | 75 | 25 |
+
+แต้มรวมทุกคน (ใช้ได้ + กันไว้) เท่ากับ 400
+
+| ประกาศ | ของใคร | หมวด | แต้ม × คน | status |
+| --- | --- | --- | --- | --- |
+| `R0001` | `9990000001` | ทดสอบเว็บ/แอป | 15 × 3 | `OPEN` |
+| `R0002` | `9990000002` | ตรวจสไลด์/เอกสาร | 20 × 1 | `OPEN` |
+| `R0003` | `9990000004` | ตอบแบบสอบถาม | 5 × 5 | `OPEN` |
+
+| งานที่รับ | ประกาศ | ผู้ช่วย | status |
+| --- | --- | --- | --- |
+| `E0001` | `R0001` | `9990000002` | `APPROVED` |
+| `E0002` | `R0001` | `9990000003` | `SUBMITTED` |
+
+รายการแต้ม `T000001`–`T000009` ตรงกับตารางข้างบน ส่วน log ไม่มีไฟล์ใน `sample_data/` (ถ้านับตามเหตุการณ์ในตารางจะได้ 12 บรรทัด)
+
+## Status
+
+ประกาศ (`HelpRequest`)
 
 ```mermaid
 stateDiagram-v2
     [*] --> OPEN : โพสต์ (กันแต้ม)
     OPEN --> CANCELLED : ปิดรับตอนยังไม่มีใครรับ (คืนทั้งหมด)
     OPEN --> CLOSED : ปิดรับ ยังมีงานรอยืนยัน (คืนที่ว่าง)
-    OPEN --> COMPLETED : ทุกที่ถูกใช้และยืนยันครบ
+    OPEN --> COMPLETED : ยืนยันครบทุกที่ หรือปิดรับตอนไม่มีงานค้าง
     CLOSED --> COMPLETED : ยืนยันงานที่เหลือครบ
 ```
 
-ส่วนผู้ช่วยแต่ละคน (Engagement) เปลี่ยน status ได้แค่ตามที่เขียนไว้ใน `config.ALLOWED_TRANSITIONS`
+ผู้ช่วยแต่ละคน (`Engagement`) เปลี่ยน status ได้แค่ตาม `config.ALLOWED_TRANSITIONS`
 
 ```mermaid
 stateDiagram-v2
@@ -195,7 +208,7 @@ stateDiagram-v2
     REVISION --> WITHDRAWN : ถอนตัว (Could)
 ```
 
-## 7. รายการแต้ม
+## รายการแต้ม
 
 | `kind` | เกิดตอนไหน | `d_available` | `d_held` |
 | --- | --- | ---: | ---: |
@@ -205,21 +218,22 @@ stateDiagram-v2
 | `EARN` | ผู้ขอยืนยันงาน (ฝั่งผู้ช่วย) | +reward | 0 |
 | `REFUND` | ปิดรับ คืนที่ว่าง | +คืน | −คืน |
 
-ยอดแต้มของแต่ละคน ก็คือผลรวม `d_available` กับผลรวม `d_held` จากทุกรายการของคนนั้น
+ยอดแต้มของแต่ละคนคือผลรวม `d_available` กับผลรวม `d_held` จากทุกรายการของคนนั้น แต้มขยับได้ทางเดียวคือ `add_transaction()` ค่า note และตัวแปรของแต่ละเหตุการณ์อยู่ใน `docs/05-contracts.md` ข้อ 6
 
-## 8. หน้าจอ
+## หน้าตาบนจอ
 
-1. หน้าจอกว้าง 64 ตัวอักษร ใช้ `=` กับ `-` ตีเส้น
-2. ทุกหน้าต้องมี header บอกชื่อหน้า ผู้ใช้ และยอดแต้ม
-3. output ขึ้นต้นด้วย `[OK]` ถ้าสำเร็จ, `[!]` ถ้ามี error และ `[i]` ถ้าเป็นข้อมูลทั่วไป
-4. ทุกเมนูย่อยต้องมี `[0] กลับ` พิมพ์เมนูด้วย `display.print_menu(ตัวเลือก, "กลับ")` ทุกหน้าจะได้หน้าตาเหมือนกัน
-5. เวลาถามอะไร ให้บอกเสมอว่ารับ input แบบไหน เช่น `แต้มต่อคน (5-100):`
-6. ก่อนยืนยันงานหรือปิดรับ ต้องถาม `ยืนยัน? (y/n)` ทุกครั้ง
+- หน้าจอกว้าง 64 ตัวอักษร (`config.SCREEN_WIDTH`) ใช้ `=` กับ `-` ตีเส้น
+- ข้อความขึ้นต้น `[OK]` เมื่อสำเร็จ `[!]` เมื่อมี error และ `[i]` เมื่อเป็นข้อมูลทั่วไป
+- เมนูพิมพ์ด้วย `display.print_menu(ตัวเลือก, "กลับ")` ทุกหน้าจะหน้าตาเหมือนกัน
+- ตอนถามบอกด้วยว่ารับอะไร เช่น `แต้มต่อคน (5-100):`
+- header ของแต่ละหน้า กับเรื่องไหนต้องถาม y/n ก่อน อยู่ใน `docs/05-contracts.md` ข้อ 4
+
+หน้าตาของเมนูหลักตอน `9990000001` login อยู่ (ตัวอย่างพิมพ์ผิดต่อท้ายเป็นข้อความจาก `input_int` ของชุด B)
 
 ```text
 ================================================================
- ChuayNoi | เมนูหลัก                ผู้ใช้: มะลิ (9990000001)
- แต้มใช้ได้ 55 | กันไว้ 30
+ ChuayNoi | เมนูหลัก    ผู้ใช้: มะลิ ใจดี (9990000001)
+ ใช้ได้ 55 | กันไว้ 30
 ================================================================
  [1] ดูบอร์ดประกาศ / ค้นหา
  [2] โพสต์ขอความช่วยเหลือ
@@ -235,9 +249,33 @@ stateDiagram-v2
 เลือกเมนู (0-7):
 ```
 
-## 9. function หลัก 19 ตัว
+## ข้อตกลงตอนเขียน code
 
-โจทย์บอกว่ากลุ่ม 3 คนต้องมีอย่างน้อย 6 function (ไม่นับ `main` กับ function ที่แสดงเมนู) ของเรามี 19 ตัว ส่วน function ที่ใน code เขียนไว้ว่า "ฟังก์ชันช่วย" ไม่นับรวม
+### กฎเหล็ก
+
+1. `service.py` กับ `search.py` ไม่มี `input()` และ `print()`
+2. เช็กกฎให้ครบก่อน ผ่านแล้วค่อยแก้ data ผิดข้อไหน data ต้องเหมือนเดิม
+3. ตัวเลขกับตัวเลือกเอามาจาก `config.py` ไม่พิมพ์ตัวเลขลอย ๆ
+4. แต้มขยับผ่าน `add_transaction()` เท่านั้น แต้มรวม (ใช้ได้ + กันไว้) ของทุกคน = 100 × จำนวนผู้ใช้เสมอ
+5. ห้ามเปลี่ยนชื่อหรือ parameter ของ function ที่มีอยู่ และไม่แก้ไฟล์ของชุดอื่น
+6. เปิด CSV ทุกครั้งใส่ `newline=""` กับ `encoding=config.CSV_ENCODING`
+7. ไม่เขียน `except:` เปล่า ๆ และไม่จับ `KeyboardInterrupt` (ให้ `app.run()` จัดการ)
+
+### ที่เหลือ
+
+- service ของ board กับ accounts คืน `(success, message)` เช่น `(False, "แต้มไม่พอ ต้องใช้ 60 มี 55")` function ของแกนกลางกับ reports คืนค่าตามที่เขียนไว้ใน `docs/05-contracts.md` ข้อ 2 และใน `docs/tasks/b-accounts-reports.md`
+- import แบบเขียนชื่อ package เต็ม เช่น `from chuaynoi.wallet.service import get_balance`
+- ชื่อตัวแปรกับ function เป็น English แบบ `snake_case` ข้อความบนจอกับ docstring เป็นภาษาไทย
+- function หนึ่งตัวไม่ควรยาวเกิน 40 บรรทัด ไม่นับ docstring ถ้ายาวกว่านั้นให้แยกเป็น function ย่อย
+- ใช้ได้แค่ `csv`, `os`, `datetime`, `unicodedata` กับของที่มากับ Python ข้อนี้ใช้กับ `chuaynoi/` ส่วน `tools/reset_data.py` เป็น tool ของทีม ไม่ได้ส่งไปกับโปรแกรม จึงใช้ `shutil` กับ `sys` ได้
+- code ต้องรันได้บน Python 3.10 ขึ้นไป และต้อง test บน Windows อย่างน้อยหนึ่งรอบ
+- docstring ภาษาไทยแบบสั้น: บรรทัดแรกสรุปด้วยกริยา แล้วตามด้วย `รับ:`, `คืน:`, `แก้ data:`, `error:`, `ดู:` เฉพาะที่มีเรื่องให้บอก (ไฟล์ของชุด A กับ B มี `กฎ:` ต่อท้าย `คืน:` และหน้าจอมี `ถาม:` เพิ่ม)
+- ข้อความใหม่ที่พิมพ์บนจอให้สั้น ไม่ขึ้นต้นด้วย "กรุณา" (ข้อความที่ตกลงไว้แล้วใน `docs/05-contracts.md` ใช้ตามนั้น)
+- ถ้าต้องแก้ไฟล์ของคนอื่นหรือ `config.py` ให้เปิด Issue ก่อน (`docs/05-contracts.md` ข้อ 9)
+
+## function หลัก 19 ตัว
+
+โจทย์บอกว่ากลุ่ม 3 คนต้องมีอย่างน้อย 6 function (ไม่นับ `main` กับ function ที่แสดงเมนู) ของเรามี 19 ตัว ส่วน function ที่ใน code เขียนไว้ว่า function ช่วย ไม่นับรวม
 
 | ชุด | ไฟล์ | function |
 | --- | --- | --- |
@@ -250,21 +288,9 @@ stateDiagram-v2
 | ชุด B | `accounts/service.py` | `register_user` |
 | ชุด B | `reports/service.py` | `summarize_board`, `export_summary_txt` |
 
-## 10. ข้อตกลงตอนเขียน code
+## เนื้อหาในวิชาที่ใช้
 
-1. function ใน `service.py` ให้ return `(success, message)` เช่น `(False, "แต้มไม่พอ ต้องใช้ 60 มี 55")`
-2. **เช็ก rule ให้ครบก่อน แล้วค่อยแก้ data** ถ้าผิด rule ข้อไหน data ต้องเหมือนเดิมทุกอย่าง
-3. ตัวเลขกับข้อความที่เป็น rule ให้ดึงจาก `config.py` เช่น `config.REWARD_MIN` ห้ามพิมพ์ `5` ลอย ๆ
-4. import แบบเขียนชื่อ package เต็ม เช่น `from chuaynoi.wallet.service import get_balance`
-5. ชื่อตัวแปรกับ function ใช้ภาษาอังกฤษแบบ `snake_case` ส่วนข้อความบนจอกับ docstring ใช้ภาษาไทย
-6. function นึงไม่ควรยาวเกิน 40 บรรทัดโดยประมาณ ถ้ายาวกว่านั้นให้แยกเป็น function ย่อย
-7. ใช้ได้แค่ module ที่มากับ Python (`csv`, `os`, `datetime`, `unicodedata`) จะได้ไม่ต้องลงอะไรเพิ่ม
-8. code ต้องรันได้บน Python 3.10 ขึ้นไป และต้อง test บน Windows อย่างน้อยหนึ่งรอบ
-9. แก้แค่ไฟล์ของชุดตัวเอง ถ้าต้องไปแก้ไฟล์ของคนอื่นหรือ `config.py` ให้คุยกันใน Issue ก่อน
-
-## 11. เนื้อหาในวิชาที่เราใช้
-
-ตารางนี้เอาไว้ใช้ตอนเขียนรายงาน กับตอนอธิบาย code
+ตารางนี้ใช้ตอนเขียนรายงานกับตอนอธิบาย code
 
 | เรื่อง | ใช้ตรงไหน |
 | --- | --- |
@@ -276,5 +302,5 @@ stateDiagram-v2
 | function | function หลัก 19 ตัว มี parameter, ค่า default และ return value |
 | List / Tuple / Dictionary | list ใน `app`, tuple ใน `config`, dict ใน `ALLOWED_TRANSITIONS` และในสถิติ |
 | ไฟล์ | อ่าน `"r"`, เขียนทับ `"w"`, เพิ่มต่อท้าย `"a"` ทั้ง `.csv` และ `.txt` |
-| จัดการ error | `try / except` กับ `ValueError`, `FileNotFoundError`, `PermissionError`, `KeyboardInterrupt` |
-| class และ object | 5 class ใน `core/` |
+| จัดการ error | `try / except` กับ `ValueError`, `KeyError`, `OSError` ส่วน `KeyboardInterrupt` จับที่เดียวคือ `app.run()` |
+| class และ object | 5 class: 4 class ใน `core/models.py` กับ `AppData` ใน `core/storage.py` |

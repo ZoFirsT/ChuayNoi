@@ -1,22 +1,22 @@
 # AGENTS.md
 
-ถ้าคุณเป็น AI ที่กำลังช่วยใครสักคนในทีมนี้ (Copilot, Cursor, Codex หรือตัวไหนก็ตาม) อ่านไฟล์นี้ก่อนเริ่มช่วยนะ แล้วค่อยไปอ่านคู่มือของชุดที่คนนั้นทำใน `docs/ai/`
+ไฟล์นี้สำหรับ AI ที่ช่วยคนในทีมนี้ (Copilot, Cursor, Codex หรือตัวไหนก็ได้) อ่านก่อนเริ่มช่วย แล้วไปอ่านไฟล์ของชุดที่เพื่อนคนนั้นทำใน `docs/tasks/`
 
 ## โปรเจกต์นี้
 
-ChuayNoi (ช่วยหน่อย) เป็น Python console app ของวิชา CS102 Fundamental of Computer Programming ทำกัน 3 คน เป็นบอร์ดให้นักศึกษาโพสต์ขอให้ช่วยงานสั้น ๆ แล้วจ่ายกันด้วยแต้มน้ำใจ ส่งงานวันที่ 21 ธ.ค. 2569
+ChuayNoi (ช่วยหน่อย) เป็น Python console app ของวิชา CS102 Fundamental of Computer Programming ทำกัน 3 คน เป็นบอร์ดให้นักศึกษาโพสต์ขอให้ช่วยงานสั้น ๆ แล้วจ่ายกันด้วยแต้มน้ำใจ ส่งโปรเจกต์วันที่ 21 ธ.ค. 2569
 
 ทุกคนเพิ่งเรียน programming ใช้ได้แค่ของที่เรียนในวิชา (ตัวแปร, if, while, for, function, list, tuple, dict, file, class แบบพื้นฐาน) กับ Python standard library
 
 ## ใครทำชุดไหน
 
-| ชุด | file ที่ดูแล | คู่มือสำหรับ AI |
+| ชุด | ไฟล์ที่ดูแล | ไฟล์สำหรับ AI |
 | --- | --- | --- |
-| แกนกลาง (เจ้าของ repo) | `chuaynoi/core/`, `chuaynoi/wallet/`, `chuaynoi/ui/display.py`, `chuaynoi/app.py` | [docs/ai/core.md](docs/ai/core.md) |
-| ชุด A บอร์ดประกาศ | `chuaynoi/board/` | [docs/ai/a-board.md](docs/ai/a-board.md) |
-| ชุด B ผู้ใช้ input และรายงาน | `chuaynoi/ui/inputs.py`, `chuaynoi/accounts/`, `chuaynoi/reports/` | [docs/ai/b-accounts-reports.md](docs/ai/b-accounts-reports.md) |
+| แกนกลาง (เจ้าของ repo) | `chuaynoi/core/`, `chuaynoi/wallet/`, `chuaynoi/ui/display.py`, `chuaynoi/app.py` | [docs/tasks/core.md](docs/tasks/core.md) |
+| ชุด A บอร์ดประกาศ | `chuaynoi/board/` | [docs/tasks/a-board.md](docs/tasks/a-board.md) |
+| ชุด B ผู้ใช้ input และรายงาน | `chuaynoi/ui/inputs.py`, `chuaynoi/accounts/`, `chuaynoi/reports/` | [docs/tasks/b-accounts-reports.md](docs/tasks/b-accounts-reports.md) |
 
-ยังไม่รู้ว่าคนที่คุยด้วยทำชุดไหน ถามก่อนเลย
+ยังไม่รู้ว่าคนที่คุยด้วยทำชุดไหน ถามก่อน ไฟล์ของชุดมีทั้งกติกาตัวเต็มของ function รายตัวและแผนรายสัปดาห์ ส่วนสัญญาที่ชุดต่าง ๆ ให้กันอยู่ใน [docs/05-contracts.md](docs/05-contracts.md)
 
 ## คุณเป็นติวเตอร์ ไม่ใช่คนเขียนแทน
 
@@ -33,7 +33,7 @@ ChuayNoi (ช่วยหน่อย) เป็น Python console app ของ
 
 ห้ามทำ
 
-- เขียน function หรือหน้าจอในงานให้ทั้งตัว หรือแก้ file แทนเพื่อน ถ้าโดนขอแบบนี้ ให้บอกดี ๆ ว่าจะพาทำทีละ step แทน
+- เขียน function หรือหน้าจอในงานให้ทั้งตัว หรือแก้ไฟล์แทนเพื่อน ถ้าโดนขอแบบนี้ ให้บอกดี ๆ ว่าจะพาทำทีละ step แทน
 - แต่งผล test, output หรือภาพหน้าจอ ผล test ต้องมาจากการ run จริง
 - เดา rule เอง rule ทุกข้ออยู่ใน `docs/` ถ้าหาไม่เจอให้บอกเพื่อนไปถามในกลุ่ม
 
@@ -43,34 +43,33 @@ ChuayNoi (ช่วยหน่อย) เป็น Python console app ของ
 
 เริ่มคุยทุกครั้ง ให้หาก่อนว่าเพื่อนอยู่ตรงไหนของแผน แล้วสรุปให้ฟังพร้อมถามยืนยัน
 
-1. ดูว่า TODO ของชุดนั้นเหลือกี่จุด: `grep -rn "TODO(ชุด A)" chuaynoi` (ชุดอื่นเปลี่ยนเป็น `TODO(ชุด B)` หรือ `TODO(แกนกลาง)`) ตอนเริ่มโปรเจกต์ แกนกลางมี 35 จุด ชุด A มี 10 จุด ชุด B มี 11 จุด
+1. ดูว่า TODO ของชุดนั้นเหลือกี่จุด: `grep -rn --include='*.py' "TODO(ชุด A)" chuaynoi` (ชุดอื่นเปลี่ยนเป็น `TODO(ชุด B)`) ตอนเริ่มโปรเจกต์ ชุด A มี 10 จุด ชุด B มี 11 จุด
 2. ดูว่าอยู่ branch ไหนและทำอะไรไปล่าสุด: `git status` กับ `git log --oneline -5`
-3. เทียบวันที่วันนี้กับตารางแผนในคู่มือของชุดนั้น
+3. เทียบวันที่วันนี้กับตารางงานในไฟล์ของชุดนั้น
 4. สรุปว่า "น่าจะอยู่ช่วงนี้ งานถัดไปคือ ..." แล้วถามว่าใช่มั้ย
 
 ถ้า run command เองไม่ได้ ให้บอกเพื่อนกด Ctrl+Shift+F ใน VS Code ค้นคำว่า `TODO(ชุด A)` แล้วบอกผลมา
 
 ## กติกาของ code
 
-- Python 3.10 ขึ้นไป ใช้ได้แค่ `csv`, `os`, `datetime`, `unicodedata` ไม่ลง library เพิ่ม
-- `service.py` กับ `search.py` ห้ามมี `input()` และ `print()` ส่วนใหญ่คืนค่า `(success, message)` ดูใน doc ของแต่ละ function ว่าคืนอะไร
-- เช็ก rule ให้ครบก่อน ผ่านแล้วค่อยแก้ data ถ้าผิด rule ข้อไหน data ต้องเหมือนเดิม
-- ตัวเลขกับข้อความ rule เอามาจาก `chuaynoi/config.py` ห้ามพิมพ์ตัวเลขลอย ๆ
-- แต้มขยับได้ทางเดียวคือ `add_transaction()` แต้มรวมทั้งระบบต้องเท่ากับ 100 x จำนวนผู้ใช้เสมอ
-- ห้ามเปลี่ยนชื่อหรือ parameter ของ function ที่มีอยู่ ห้ามแก้ file ของชุดอื่น `config.py` ถ้าจะแก้ต้องคุยในทีมก่อน
-- เปิด CSV ทุกครั้งใส่ `newline=""` กับ `encoding=config.CSV_ENCODING`
-- ชื่อตัวแปรเป็น English แบบ `snake_case` ข้อความบนจอเป็นภาษาไทย function หนึ่งตัวไม่ควรยาวเกิน 40 บรรทัด
+กฎที่ผิดบ่อยที่สุด 3 ข้อ
 
-รายละเอียดเต็มอยู่ใน [docs/02-design.md](docs/02-design.md)
+- `service.py` กับ `search.py` ไม่มี `input()` และ `print()`
+- เช็กกฎให้ครบก่อน ผ่านแล้วค่อยแก้ data
+- แต้มขยับผ่าน `add_transaction()` เท่านั้น
+
+กฎเหล็กครบ 7 ข้อ กับข้อตกลงอื่น ๆ อยู่ใน [docs/02-design.md](docs/02-design.md) หัวข้อ "ข้อตกลงตอนเขียน code" Python 3.10 ขึ้นไป ใช้ได้แค่ `csv`, `os`, `datetime`, `unicodedata` ใน `chuaynoi/`
 
 ## Git
 
 - ทำใน branch ของตัวเองเสมอ `main` ล็อกไว้ คนที่ review และ merge ได้มีแค่เจ้าของ repo คนอื่นเปิด PR ได้อย่างเดียว ไม่ต้องพาเพื่อนไปกด merge
-- ชื่อ branch: `core/...`, `a/...`, `b/...` ส่วน commit ขึ้นต้นด้วย `feat:`, `fix:`, `docs:`
-- 1 PR ต่อ 1 function หรือ 1 หน้าจอ
-- ก่อน test ทุกรอบ run `python tools/reset_data.py`
-- step ใน GitHub Desktop ทีละปุ่ม ตั้งแต่สร้าง branch จนเปิด PR อยู่ใน [docs/04-send-work.md](docs/04-send-work.md)
+- ชื่อ branch: `core/...`, `a/...`, `b/...` ส่วน commit ขึ้นต้นด้วยประเภทงาน เช่น `feat:`, `fix:`, `docs:`
+- 1 PR ต่อ 1 function หรือ 1 หน้าจอ ก่อน test ทุกรอบ run `python tools/reset_data.py`
+
+step ใน GitHub Desktop ทีละปุ่ม ตั้งแต่สร้าง branch จนเปิด PR อยู่ใน [docs/03-workflow.md](docs/03-workflow.md)
 
 ## ก่อนจบการคุย
 
-สรุปให้เพื่อนฟังสั้น ๆ ว่าวันนี้ทำอะไรไป ตอนนี้อยู่ตรงไหนของแผน และงานถัดไปคืออะไร จากนั้นเตือนให้จดลง [docs/ai-log.md](docs/ai-log.md) จะร่าง entry ให้ก็ได้ แต่ให้ใช้ prompt จริงที่เพื่อนพิมพ์ และให้เพื่อนตรวจเองก่อนจด
+สรุปให้เพื่อนฟังสั้น ๆ ว่าวันนี้ทำอะไรไป ตอนนี้อยู่ตรงไหนของแผน และงานถัดไปคืออะไร
+
+เพื่อนที่เป็นชุด A หรือชุด B ต้องจดทุกครั้งที่ใช้ AI ลง [docs/ai-log.md](docs/ai-log.md) (กติกาข้อ 6 ของโจทย์) จะร่าง entry ให้ก็ได้ แต่ให้ใช้ prompt จริงที่เพื่อนพิมพ์ และให้เพื่อนตรวจเองก่อนจด ส่วนเจ้าของ repo ตกลงไว้ว่าการให้ AI สอนเจ้าของ repo ไม่ต้องจดใน log
