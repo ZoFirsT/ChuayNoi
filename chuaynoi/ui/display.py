@@ -1,8 +1,8 @@
-"""แสดงผลบนจอให้ดูเป็นระเบียบ ภาษาไทยก็ไม่เบี้ยว (ชุดแกนกลาง)
+"""แสดงผลบนจอให้เป็นระเบียบ ภาษาไทยไม่เบี้ยว (แกนกลาง)
 
-สระบน/ล่างกับวรรณยุกต์ไทยไม่กินที่บนจอ แต่ len() ดันนับเป็น 1
-เวลาจัด column เลยต้องใช้ display_width() แทน len() ไม่งั้นตารางภาษาไทยจะเบี้ยว
-รายละเอียดอยู่ใน docs/tasks/core.md
+สระบนล่างกับวรรณยุกต์ไทยไม่กินที่บนจอ แต่ len() นับเป็น 1 ตัว
+เลยจัด column ด้วย display_width() แทน len() ตารางถึงไม่เบี้ยว
+ดู: docs/05-contracts.md ข้อ 2
 """
 
 import unicodedata
@@ -11,7 +11,14 @@ from chuaynoi import config
 
 
 def display_width(text):
-    """ความกว้างจริงของข้อความตอนขึ้นจอ เช่น display_width("ที่ว่าง") ต้องได้ 4 ไม่ใช่ 7"""
+    """วัดความกว้างของข้อความตอนขึ้นจอ
+
+    รับ: text ข้อความ
+    คืน: int ตัวอักษรกลุ่ม Mn (สระบน/ล่าง วรรณยุกต์) นับ 0, ตัวกว้าง (East Asian W กับ F) นับ 2, ที่เหลือนับ 1
+        เช่น display_width("ที่ว่าง") ได้ 4 ไม่ใช่ 7
+    แก้ data: ไม่แก้อะไร
+    ดู: docs/05-contracts.md ข้อ 2
+    """
     width = 0
     for ch in text:
         if unicodedata.category(ch) == "Mn":
@@ -25,7 +32,7 @@ def display_width(text):
 
 
 def format_cell(value, width):
-    """แปลงค่า 1 ช่องเป็นข้อความที่กว้างเท่า width ตัวเลขชิดขวา ที่เหลือชิดซ้าย"""
+    """จัดค่า 1 ช่องให้กว้างเท่า width ตัวเลข (int, float) ชิดขวา ที่เหลือชิดซ้าย (function ช่วย)"""
     text = str(value)
     spaces = " " * (width - display_width(text))
     if isinstance(value, (int, float)):
@@ -34,7 +41,7 @@ def format_cell(value, width):
 
 
 def format_line(values, widths):
-    """ประกอบ 1 แถวของตาราง"""
+    """ประกอบ 1 แถวของตารางจากค่าแต่ละช่องกับความกว้างของ column คั่นด้วย | (function ช่วย)"""
     line = "|"
     for i in range(len(values)):
         line += " " + format_cell(values[i], widths[i]) + " |"
@@ -42,7 +49,15 @@ def format_line(values, widths):
 
 
 def print_table(headers, rows):
-    """พิมพ์ตารางแบบมีเส้นขอบ column ต้องตรงกันแม้มีภาษาไทย ตัวเลขชิดขวา ถ้า rows ว่างให้พิมพ์ "[i] ไม่มีข้อมูล" แทน"""
+    """พิมพ์ตารางแบบมีเส้นขอบ column ตรงกันแม้มีภาษาไทย
+
+    รับ: headers list ชื่อ column, rows list ของแถว (แต่ละแถวเป็น list ที่ยาวเท่า headers)
+    คืน: ไม่คืนค่า
+    แก้ data: ไม่แก้อะไร
+    ความกว้างของ column ปรับตามข้อความที่ยาวสุด ไม่ตัดข้อความ ตัวเลขชิดขวา
+    ถ้า rows ว่าง พิมพ์ "[i] ไม่มีข้อมูล" แทนตาราง
+    ดู: docs/05-contracts.md ข้อ 2
+    """
     if len(rows) == 0:
         print("[i] ไม่มีข้อมูล")
         return
@@ -69,7 +84,7 @@ def print_table(headers, rows):
 
 
 def print_header(title, subtitle=""):
-    """หัวของแต่ละหน้าจอ: เส้น "=" ยาว config.SCREEN_WIDTH ตามด้วยชื่อหน้ากับบรรทัดรอง (ฟังก์ชันช่วย)"""
+    """พิมพ์หัวหน้าจอ: เส้น "=" ยาว config.SCREEN_WIDTH, ชื่อหน้า, บรรทัดรอง (ถ้าไม่ว่าง), แล้วปิดด้วยเส้น "=" (function ช่วย)"""
     line = "=" * config.SCREEN_WIDTH
     print(line)
     print(" " + title)
@@ -79,7 +94,7 @@ def print_header(title, subtitle=""):
 
 
 def print_menu(options, zero_label):
-    """พิมพ์ตัวเลือกเป็นข้อ ๆ [1] ถึง [n] ปิดท้ายด้วย [0] กับเส้นคั่น (ฟังก์ชันช่วย)
+    """พิมพ์ตัวเลือก [1] ถึง [n] ตามด้วย [0] กับเส้น "-" ยาว config.SCREEN_WIDTH (function ช่วย)
 
     ใช้ได้ทุกหน้าจอ เช่น print_menu(["ยืนยันงาน", "ปิดรับ"], "กลับ")
     """

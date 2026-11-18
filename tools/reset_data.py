@@ -1,10 +1,11 @@
-"""reset data กลับเป็น sample data (เป็น tool ของทีม ไม่ได้เป็นส่วนของโปรแกรมที่ส่ง)
+"""reset data/ กลับเป็น sample_data/ (เครื่องมือของทีม ไม่ได้ส่งไปกับโปรแกรม)
 
 วิธีใช้ (run จาก root ของ repo):
     python tools/reset_data.py
 
 copy ทุกไฟล์ใน sample_data/ ไปทับใน data/ ให้ run ก่อนเริ่ม test ทุกรอบ ผลจะได้เทียบกันได้
 folder data/ ไม่ขึ้น Git อยู่แล้ว data ที่แต่ละคน test เลยไม่ชนกัน
+ใช้แค่ stdlib (os, shutil, sys) ไม่ import อะไรจาก chuaynoi/
 """
 
 import os
@@ -17,7 +18,12 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 
 
 def reset_data():
-    """copy sample data ไปไว้ที่ data/ แล้ว return (จำนวนไฟล์ที่ copy ได้, จำนวนที่ copy ไม่ได้)"""
+    """copy ไฟล์ใน sample_data/ ไปทับที่ data/
+
+    คืน: (copied, failed) จำนวนไฟล์ที่ copy ได้กับที่ copy ไม่ได้ ถ้าไม่พบ sample_data/ ได้ (0, 0)
+    แก้ data: เขียนทับไฟล์ชื่อเดียวกันใน data/ (สร้าง folder data/ ถ้ายังไม่มี)
+    error: จับ OSError ของแต่ละไฟล์ นับเป็น failed แล้วไปไฟล์ถัดไป
+    """
     if not os.path.isdir(SAMPLE_DIR):
         print("[!] ไม่พบโฟลเดอร์ sample_data/")
         return 0, 0

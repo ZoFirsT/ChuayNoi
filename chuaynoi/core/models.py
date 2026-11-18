@@ -1,19 +1,19 @@
-"""data class หลักของโปรแกรม (1 object = 1 แถวใน CSV) ชุดแกนกลางเป็นคนเขียน
+"""data class หลักของโปรแกรม 1 object = 1 แถวใน CSV (แกนกลาง)
 
-attribute ของทุก class ดูได้ใน docs/02-design.md หัวข้อ "คลาสและ attribute"
-ทุกชุดใช้ชื่อตามนั้นเป๊ะ ๆ ถ้าจะเปลี่ยนชื่อต้องบอกทีมก่อน
-
-ทุก class มี 2 ตัวนี้
-    to_row()           แปลง object เป็น list ไว้เขียนลง CSV (เรียงตาม *_FIELDS ใน config)
-    from_row(row)      แปลง dict 1 แถวจาก csv.DictReader กลับเป็น object
-                       ถ้า data ผิด format ให้ ValueError หลุดออกไปเลย (storage จะข้ามแถวนั้นเอง)
+ทุก class มี to_row() แปลง object เป็น list ตามลำดับ *_FIELDS ใน config
+กับ from_row(row) แปลง dict 1 แถวจาก csv.DictReader กลับเป็น object
+ชื่อ attribute ของทุก class เป็นข้อตกลงร่วมของทุกชุด ห้ามเปลี่ยน
+ดู: docs/02-design.md หัวข้อ User, HelpRequest, Engagement และ Transaction
 """
 
 from chuaynoi import config
 
 
 class User:
-    """นักศึกษา 1 คน (users.csv) เป็นได้ทั้งคนขอและคนช่วย ยอดแต้มไม่ได้เก็บไว้ตรงนี้"""
+    """นักศึกษา 1 คน (users.csv) เป็นได้ทั้งผู้ขอและผู้ช่วย ยอดแต้มไม่ได้เก็บไว้ที่นี่
+
+    ดู: docs/02-design.md หัวข้อ User
+    """
 
     def __init__(self, student_id, name, faculty, skills, created_at):
         """เก็บทุก parameter เป็น attribute ชื่อเดียวกัน (skills เป็น list ของ str)"""
@@ -24,6 +24,7 @@ class User:
         self.created_at = created_at
 
     def to_row(self):
+        """แปลงเป็น list 1 แถวไว้เขียน CSV (skills ต่อกันด้วย config.SKILL_SEPARATOR)"""
         return [
             self.student_id,
             self.name,
@@ -34,6 +35,7 @@ class User:
 
     @staticmethod
     def from_row(row):
+        """แปลง dict 1 แถวเป็น User (skills ว่างได้ list ว่าง) raise ValueError ถ้า faculty ไม่อยู่ใน config.FACULTIES"""
         if row["faculty"] not in config.FACULTIES:
             raise ValueError(f"Invalid faculty: {row['faculty']}")
 
@@ -48,7 +50,10 @@ class User:
 
 
 class HelpRequest:
-    """ประกาศขอให้ช่วย 1 อัน (requests.csv)"""
+    """ประกาศขอให้ช่วย 1 อัน (requests.csv)
+
+    ดู: docs/02-design.md หัวข้อ HelpRequest
+    """
 
     def __init__(
         self,
@@ -76,11 +81,22 @@ class HelpRequest:
         self.created_at = created_at
 
     def total_cost(self):
-        """แต้มที่ต้องกันไว้ตอนโพสต์ = reward x slots"""
+        """หาแต้มที่ต้องกันไว้ตอนโพสต์
+
+        คืน: reward × slots (int)
+        แก้ data: ไม่แก้อะไร
+        """
         return self.reward * self.slots
 
     def count_used_slots(self, engagements):
-        """นับว่าที่ถูกใช้ไปกี่ที่แล้ว (นับผู้ช่วยของประกาศนี้ที่ยังทำอยู่หรือยืนยันแล้ว คนที่ถอนตัวไม่นับ)"""
+        """นับจำนวน slot ในประกาศนี้ที่ถูกจองไปแล้ว
+
+        รับ: engagements list ของ Engagement ทั้งหมด (ปกติคือ app.engagements)
+        คืน: จำนวน engagement ของประกาศนี้ที่ status อยู่ใน config.ACTIVE_ENGAGEMENT_STATUSES
+            หรือเป็น ENG_APPROVED (ผู้ช่วยที่ถอนตัว WITHDRAWN ไม่นับ)
+        แก้ data: ไม่แก้อะไร
+        ดู: docs/02-design.md หัวข้อ HelpRequest
+        """
         count = 0
         for e in engagements:
             if e.request_id == self.request_id and (
@@ -91,6 +107,7 @@ class HelpRequest:
         return count
 
     def to_row(self):
+        """แปลงเป็น list 1 แถวไว้เขียน CSV (เรียงตาม config.REQUEST_FIELDS)"""
         return [
             self.request_id,
             self.owner_id,
@@ -106,6 +123,7 @@ class HelpRequest:
 
     @staticmethod
     def from_row(row):
+        """แปลง dict 1 แถวเป็น HelpRequest raise ValueError ถ้า reward, slots, minutes ไม่ใช่ตัวเลข หรือ status กับ category ไม่อยู่ใน config"""
         reward = int(row["reward"])
         slots = int(row["slots"])
         minutes = int(row["minutes"])
@@ -131,7 +149,10 @@ class HelpRequest:
 
 
 class Engagement:
-    """ผู้ช่วย 1 คนในประกาศ 1 อัน (engagements.csv)"""
+    """ผู้ช่วย 1 คนในประกาศ 1 อัน (engagements.csv) status เปลี่ยนได้ตาม config.ALLOWED_TRANSITIONS
+
+    ดู: docs/02-design.md หัวข้อ Engagement
+    """
 
     def __init__(
         self,
@@ -153,13 +174,21 @@ class Engagement:
         self.updated_at = updated_at
 
     def change_status(self, new_status):
-        """เปลี่ยน status ตาม config.ALLOWED_TRANSITIONS ถ้าไปต่อไม่ได้ให้ raise ValueError พร้อมบอกเหตุผล"""
+        """เปลี่ยน status ตามเส้นทางที่ config.ALLOWED_TRANSITIONS อนุญาต
+
+        รับ: new_status status ใหม่
+        คืน: ไม่คืนค่า
+        แก้ data: self.status เป็น new_status (updated_at ไม่เปลี่ยนเอง ผู้เรียกตั้งเอง)
+        error: raise ValueError("เปลี่ยน status จาก {เดิม} ไป {ใหม่} ไม่ได้") ถ้าเปลี่ยนไม่ได้ ตอนนั้นยังไม่แก้อะไร
+        ดู: docs/02-design.md หัวข้อ Engagement
+        """
         allowed = config.ALLOWED_TRANSITIONS.get(self.status, ())
         if new_status not in allowed:
             raise ValueError(f"เปลี่ยน status จาก {self.status} ไป {new_status} ไม่ได้")
         self.status = new_status
 
     def to_row(self):
+        """แปลงเป็น list 1 แถวไว้เขียน CSV (เรียงตาม config.ENGAGEMENT_FIELDS)"""
         return [
             self.engagement_id,
             self.request_id,
@@ -172,6 +201,7 @@ class Engagement:
 
     @staticmethod
     def from_row(row):
+        """แปลง dict 1 แถวเป็น Engagement raise ValueError ถ้า revisions ไม่ใช่ตัวเลข หรือ status ไม่อยู่ใน config.ENGAGEMENT_STATUSES"""
         revisions = int(row["revisions"])
 
         if row["status"] not in config.ENGAGEMENT_STATUSES:
@@ -189,7 +219,10 @@ class Engagement:
 
 
 class Transaction:
-    """รายการแต้มที่ขยับ 1 รายการ (transactions.csv) มีแต่เพิ่มต่อท้าย ห้ามแก้ของเดิม"""
+    """รายการแต้มที่ขยับ 1 รายการ (transactions.csv) มีแต่เพิ่มต่อท้าย ห้ามแก้ของเดิม
+
+    ดู: docs/02-design.md หัวข้อ Transaction
+    """
 
     def __init__(
         self,
@@ -213,6 +246,7 @@ class Transaction:
         self.note = note
 
     def to_row(self):
+        """แปลงเป็น list 1 แถวไว้เขียน CSV (เรียงตาม config.TRANSACTION_FIELDS)"""
         return [
             self.txn_id,
             self.created_at,
@@ -226,6 +260,7 @@ class Transaction:
 
     @staticmethod
     def from_row(row):
+        """แปลง dict 1 แถวเป็น Transaction raise ValueError ถ้า d_available หรือ d_held ไม่ใช่ตัวเลข หรือ kind ไม่อยู่ใน config.TRANSACTION_KINDS"""
         d_available = int(row["d_available"])
         d_held = int(row["d_held"])
 

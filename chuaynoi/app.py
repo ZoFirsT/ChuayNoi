@@ -1,6 +1,7 @@
-"""main menu ของโปรแกรม: โหลด data, ให้ login แล้วพาไปหน้าจอของแต่ละ feature (ชุดแกนกลาง)
+"""เมนูหลัก ของโปรแกรม โหลด data ให้ login แล้วพาไปหน้าจอของแต่ละ feature (แกนกลาง)
 
-รายละเอียดอยู่ใน docs/tasks/core.md
+ไฟล์นี้เป็นที่เดียวที่จับ KeyboardInterrupt (Ctrl+C) ที่อื่นต้องปล่อยให้ผ่านมาถึงที่นี่
+ดู: docs/05-contracts.md ข้อ 4 และข้อ 7
 """
 
 from chuaynoi.accounts import menu as accounts_menu
@@ -28,9 +29,16 @@ MAIN_MENU = (
 
 
 def run():
-    """จุดเริ่มของโปรแกรม โหลด data แล้วเข้าหน้าแรก ต่อด้วย main menu วนไปจนกว่า user จะเลือกออก
+    """เปิดโปรแกรม โหลด data แล้ววนหน้าแรกกับ เมนูหลัก จนกว่าผู้ใช้จะเลือกออก
 
-    ถ้ากด Ctrl+C ตอนไหนก็ตาม ต้อง save data แล้วออกแบบเนียน ๆ ห้ามมี Traceback โผล่
+    คืน: ไม่คืนค่า
+    แก้ data: ตอนจบ (เลือกออก หรือกด Ctrl+C) เรียก storage.save_all(app)
+        สำเร็จ print "[OK] บันทึกข้อมูลแล้ว" ไม่สำเร็จ print "[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน"
+        ถ้า load ข้ามแถวไป print "[i] ข้าม {n} แถวที่อ่านไม่ผ่าน" ก่อนเข้าหน้าแรก
+        เมื่อ main_menu คืน "logout" เคลียร์ app.current_user_id เป็น "" แล้วกลับหน้าแรก
+    error: Ctrl+C ที่ไหนก็ได้ในหน้าแรกหรือ เมนูหลัก ถูกจับที่นี่ (print บรรทัดว่าง แล้ว save เหมือนออกปกติ ไม่มี Traceback)
+        ไม่ครอบคลุม Ctrl+C ตอน load_all() กับ EOFError
+    ดู: docs/05-contracts.md ข้อ 7
     """
     app = storage.load_all()
     if app.skipped_rows > 0:
@@ -54,9 +62,11 @@ def run():
 
 
 def start_screen(app):
-    """หน้าแรก: [1] เข้าสู่ระบบ [2] สมัคร [0] ออก
+    """แสดงหน้าแรก ให้เลือกเข้าสู่ระบบ [1] สมัคร [2] หรือออก [0] วนจนกว่าจะ login หรือเลือกออก
 
-    return True ถ้า login ผ่าน, False ถ้า user เลือกออก
+    คืน: True เมื่อ login สำเร็จ (รวมสมัครแล้ว login), False เมื่อ user เลือกออก
+    แก้ data: ไม่แก้เอง screen_login กับ screen_register เป็นคนตั้ง app.current_user_id
+    ดู: docs/05-contracts.md ข้อ 4
     """
     while True:
         display.print_header(
@@ -79,8 +89,11 @@ def start_screen(app):
 
 
 def main_menu(app):
-    """main menu: เลือกเลขไหนก็เรียกหน้าจอของ feature นั้น
-    return "logout" ถ้าเลือกสลับผู้ใช้ หรือ "exit" ถ้าเลือกออก
+    """แสดง เมนูหลัก พร้อมชื่อกับยอดแต้มล่าสุด แล้วเรียกหน้าจอตามเลขที่เลือก
+
+    คืน: "exit" เมื่อเลือกบันทึกและออก, "logout" เมื่อเลือกสลับผู้ใช้
+    แก้ data: ไม่แก้เอง หลังกลับจากทุกหน้าจอ พิมพ์ชื่อกับยอดใหม่ที่อ่านจาก app ตอนนั้น
+    ดู: docs/05-contracts.md ข้อ 4
     """
     while True:
         user = app.find_user(app.current_user_id)
