@@ -17,71 +17,229 @@ class User:
 
     def __init__(self, student_id, name, faculty, skills, created_at):
         """เก็บทุก parameter เป็น attribute ชื่อเดียวกัน (skills เป็น list ของ str)"""
-        raise NotImplementedError("TODO(แกนกลาง): User.__init__")
+        self.student_id = student_id
+        self.name = name
+        self.faculty = faculty
+        self.skills = skills
+        self.created_at = created_at
 
     def to_row(self):
-        raise NotImplementedError("TODO(แกนกลาง): User.to_row")
+        return[
+            self.student_id,
+            self.name,
+            self.faculty,
+            config.SKILL_SEPARATOR.join(self.skills),
+            self.created_at,
+        ]
 
     @staticmethod
     def from_row(row):
-        raise NotImplementedError("TODO(แกนกลาง): User.from_row")
+        if row["faculty"] not in config.FACULTIES:
+            raise ValueError(f"Invalid faculty: {row['faculty']}")
+
+        if row["skills"] == "":
+            skills = []
+        else:
+            skills = row["skills"].split(config.SKILL_SEPARATOR)
+
+        return User(
+            row["student_id"],
+            row["name"],
+            row["faculty"],
+            skills,
+            row["created_at"]
+        )
 
 
 class HelpRequest:
     """ประกาศขอให้ช่วย 1 อัน (requests.csv)"""
 
-    def __init__(self, request_id, owner_id, title, detail, category,
-                 reward, slots, minutes, status, created_at):
+    def __init__(
+        self,
+        request_id,
+        owner_id,
+        title,
+        detail,
+        category,
+        reward,
+        slots,
+        minutes,
+        status,
+        created_at,
+    ):
         """เก็บทุก parameter เป็น attribute ชื่อเดียวกัน (reward, slots, minutes เป็น int)"""
-        raise NotImplementedError("TODO(แกนกลาง): HelpRequest.__init__")
+        self.request_id = request_id
+        self.owner_id = owner_id
+        self.title = title
+        self.detail = detail
+        self.category = category
+        self.reward = reward
+        self.slots = slots
+        self.minutes = minutes
+        self.status = status
+        self.created_at = created_at
 
     def total_cost(self):
         """แต้มที่ต้องกันไว้ตอนโพสต์ = reward x slots"""
-        raise NotImplementedError("TODO(แกนกลาง): HelpRequest.total_cost")
+        return self.reward * self.slots
 
     def count_used_slots(self, engagements):
         """นับว่าที่ถูกใช้ไปกี่ที่แล้ว (นับผู้ช่วยของประกาศนี้ที่ยังทำอยู่หรือยืนยันแล้ว คนที่ถอนตัวไม่นับ)"""
-        raise NotImplementedError("TODO(แกนกลาง): HelpRequest.count_used_slots")
+        count = 0
+        for e in engagements:
+            if e.request_id == self.request_id and (e.status in config.ACTIVE_ENGAGEMENT_STATUSES or e.status == config.ENG_APPROVED):
+                count += 1
+        return count
 
     def to_row(self):
-        raise NotImplementedError("TODO(แกนกลาง): HelpRequest.to_row")
+        return [
+            self.request_id,
+            self.owner_id,
+            self.title,
+            self.detail,
+            self.category,
+            self.reward,
+            self.slots,
+            self.minutes,
+            self.status,
+            self.created_at,
+        ]
 
     @staticmethod
     def from_row(row):
-        raise NotImplementedError("TODO(แกนกลาง): HelpRequest.from_row")
+        reward = int(row["reward"])
+        slots = int(row["slots"])
+        minutes = int(row["minutes"])
+
+        if row["status"] not in config.REQUEST_STATUSES:
+            raise ValueError(f"Invalid req status: {row['status']}")
+
+        if row["category"] not in config.CATEGORIES:
+            raise ValueError(f"Invalid category: {row['category']}")
+
+        return HelpRequest(
+            row["request_id"],
+            row["owner_id"],
+            row["title"],
+            row["detail"],
+            row["category"],
+            reward,
+            slots,
+            minutes,
+            row["status"],
+            row["created_at"],
+        )
 
 
 class Engagement:
     """ผู้ช่วย 1 คนในประกาศ 1 อัน (engagements.csv)"""
 
-    def __init__(self, engagement_id, request_id, helper_id, status,
-                 result, revisions, updated_at):
+    def __init__(
+        self,
+        engagement_id,
+        request_id,
+        helper_id,
+        status,
+        result,
+        revisions,
+        updated_at,
+    ):
         """เก็บทุก parameter เป็น attribute ชื่อเดียวกัน (revisions เป็น int)"""
-        raise NotImplementedError("TODO(แกนกลาง): Engagement.__init__")
+        self.engagement_id = engagement_id
+        self.request_id = request_id
+        self.helper_id = helper_id
+        self.status = status
+        self.result = result
+        self.revisions = revisions
+        self.updated_at = updated_at
 
     def change_status(self, new_status):
         """เปลี่ยน status ตาม config.ALLOWED_TRANSITIONS ถ้าไปต่อไม่ได้ให้ raise ValueError พร้อมบอกเหตุผล"""
-        raise NotImplementedError("TODO(แกนกลาง): Engagement.change_status")
+        allowed = config.ALLOWED_TRANSITIONS.get(self.status, ())
+        if new_status not in allowed:
+            raise ValueError(f"เปลี่ยน status จาก {self.status} ไป {new_status} ไม่ได้")
+        self.status = new_status
 
     def to_row(self):
-        raise NotImplementedError("TODO(แกนกลาง): Engagement.to_row")
+        return [
+            self.engagement_id,
+            self.request_id,
+            self.helper_id,
+            self.status,
+            self.result,
+            self.revisions,
+            self.updated_at,
+        ]
 
     @staticmethod
     def from_row(row):
-        raise NotImplementedError("TODO(แกนกลาง): Engagement.from_row")
+        revisions = int(row["revisions"])
+
+        if row["status"] not in config.ENGAGEMENT_STATUSES:
+            raise ValueError(f"Invalid engagement status: {row['status']}")
+
+        return Engagement(
+            row["engagement_id"],
+            row["request_id"],
+            row["helper_id"],
+            row["status"],
+            row["result"],
+            revisions,
+            row["updated_at"],
+        )
 
 
 class Transaction:
     """รายการแต้มที่ขยับ 1 รายการ (transactions.csv) มีแต่เพิ่มต่อท้าย ห้ามแก้ของเดิม"""
 
-    def __init__(self, txn_id, created_at, student_id, kind,
-                 d_available, d_held, request_id, note):
+    def __init__(
+        self,
+        txn_id,
+        created_at,
+        student_id,
+        kind,
+        d_available,
+        d_held,
+        request_id,
+        note,
+    ):
         """เก็บทุก parameter เป็น attribute ชื่อเดียวกัน (d_available, d_held เป็น int)"""
-        raise NotImplementedError("TODO(แกนกลาง): Transaction.__init__")
+        self.txn_id = txn_id
+        self.created_at = created_at
+        self.student_id = student_id
+        self.kind = kind
+        self.d_available = d_available
+        self.d_held = d_held
+        self.request_id = request_id
+        self.note = note
 
     def to_row(self):
-        raise NotImplementedError("TODO(แกนกลาง): Transaction.to_row")
+        return[
+            self.txn_id,
+            self.created_at,
+            self.student_id,
+            self.kind,
+            self.d_available,
+            self.d_held,
+            self.request_id,
+            self.note,
+        ]
 
     @staticmethod
     def from_row(row):
-        raise NotImplementedError("TODO(แกนกลาง): Transaction.from_row")
+        d_available = int(row["d_available"])
+        d_held = int(row["d_held"])
+
+        if row["kind"] not in config.TRANSACTION_KINDS:
+            raise ValueError(f"Invalid transaction kind: {row['kind']}")
+
+        return Transaction(
+            row["txn_id"],
+            row["created_at"],
+            row["student_id"],
+            row["kind"],
+            d_available,
+            d_held,
+            row["request_id"],
+            row["note"],
+        )
