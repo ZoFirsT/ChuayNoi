@@ -23,6 +23,7 @@ python main.py
 
 | ไฟล์ | อ่านตอนไหน |
 | --- | --- |
+| [docs/00-start-here.md](docs/00-start-here.md) | เพิ่งเข้าทีม อ่านอันนี้ก่อนเลย |
 | [docs/01-overview.md](docs/01-overview.md) | อยากรู้ว่าเราจะทำอะไรกัน |
 | [docs/02-design.md](docs/02-design.md) | ก่อนเริ่มเขียน code |
 | [docs/03-workflow.md](docs/03-workflow.md) | ตอน setup ครั้งแรก และทุกครั้งที่จะส่งงาน |
