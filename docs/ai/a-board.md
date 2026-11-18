@@ -39,7 +39,7 @@ step ของแต่ละ function กับ rule ทุกข้ออย�
 
 ของที่ต้องเรียกใช้จากคนอื่น
 
-- แกนกลาง: class `HelpRequest`, `Engagement` (`core/models.py`), `app.find_request()`, `app.find_engagement()`, `app.next_id()` (`core/storage.py`), `add_transaction()`, `get_balance()` (`wallet/service.py`), `print_table()`, `print_header()` (`ui/display.py`)
+- แกนกลาง: class `HelpRequest`, `Engagement` (`core/models.py`), `app.find_request()`, `app.find_engagement()`, `app.next_id()` (`core/storage.py`), `add_transaction()`, `get_balance()` (`wallet/service.py`), `print_table()`, `print_header()`, `print_menu()` (`ui/display.py`)
 - ชุด B: `input_int()`, `input_text()`, `input_choice()`, `input_yes_no()` (`ui/inputs.py`)
 
 ถ้าของพวกนี้ยังไม่เสร็จ ให้เขียนส่วนที่ไม่ต้องใช้มันไปก่อน แล้วค่อยกลับมาต่อ

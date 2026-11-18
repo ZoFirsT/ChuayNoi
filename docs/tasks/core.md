@@ -11,7 +11,7 @@
 | `chuaynoi/core/storage.py` | `AppData`, `load_csv`, `save_csv`, `append_log`, `load_all`, `save_all` |
 | `chuaynoi/wallet/service.py` | `add_transaction`, `get_balance`, `list_history` |
 | `chuaynoi/wallet/menu.py` | `screen_wallet` |
-| `chuaynoi/ui/display.py` | `display_width`, `print_table`, `print_header` |
+| `chuaynoi/ui/display.py` | `display_width`, `print_table`, `print_header`, `print_menu` |
 | `chuaynoi/app.py` | `run`, `start_screen`, `main_menu` |
 | `chuaynoi/config.py` | ดูแลค่าคงที่ (ทุกคนอ่านได้ แต่ถ้าจะแก้ต้องบอกทีมก่อน) |
 
@@ -61,6 +61,7 @@ action ที่ใช้ใน log: `REGISTER`, `LOGIN`, `CREATE_REQUEST`, `APP
 - `display_width(text)`: วนทีละตัวอักษร ถ้า `unicodedata.category(ch) == "Mn"` นับเป็น 0, ถ้า `unicodedata.east_asian_width(ch) in ("W", "F")` นับเป็น 2 ที่เหลือนับ 1
 - `print_table(headers, rows)`: ความกว้างคอลัมน์คือ `display_width` ที่มากที่สุดในคอลัมน์นั้น เติมช่องว่างเท่ากับความกว้างคอลัมน์ − `display_width(ค่า)` ส่วนตัวเลขให้ชิดขวา
 - `print_header(title, subtitle)`: เส้น `=` กว้างเท่า `config.SCREEN_WIDTH`
+- `print_menu(options, zero_label)`: พิมพ์ `[1]` ถึง `[n]` ตาม `options` ปิดด้วย `[0] zero_label` แล้วตามด้วยเส้น `-` ใช้ทั้งเมนูหลักและเมนูย่อยของทุกชุด
 
 ### `app.py`
 

@@ -23,7 +23,7 @@
 | `app.find_request()`, `app.find_engagement()`, `app.next_id()` | แกนกลาง `core/storage.py` | หา data และสร้างรหัสใหม่ |
 | `add_transaction()`, `get_balance()` | แกนกลาง `wallet/service.py` | กันแต้ม โอนแต้ม คืนแต้ม |
 | `input_int()`, `input_text()`, `input_choice()`, `input_yes_no()` | ชุด B `ui/inputs.py` | รับ input จากผู้ใช้ในหน้าจอ |
-| `print_table()`, `print_header()` | แกนกลาง `ui/display.py` | โชว์ตาราง |
+| `print_table()`, `print_header()`, `print_menu()` | แกนกลาง `ui/display.py` | โชว์ตาราง หัวจอ และเมนู `[1] ... [0] กลับ` |
 
 ## แผนแต่ละสัปดาห์
 
