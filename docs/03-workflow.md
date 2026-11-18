@@ -41,8 +41,8 @@ flowchart LR
     C --> D["Commit"]
     D --> E["Push"]
     E --> F["เปิด Pull Request"]
-    F --> G["เพื่อนรีวิว + Approve"]
-    G --> H["Merge"]
+    F --> G["เจ้าของ repo review"]
+    G --> H["เจ้าของ repo merge"]
     H --> A
 ```
 
@@ -53,11 +53,11 @@ flowchart LR
 | 3. เขียนโค้ด | แก้ใน VS Code เฉพาะ file ของชุดตัวเอง แล้ว test ตาม doc ของชุดนั้น |
 | 4. Commit | ช่อง Summary เขียนว่าทำอะไรไป เช่น `feat: input_int` แล้วกด Commit to … |
 | 5. Push | กด Publish branch (ครั้งแรก) หรือ Push origin |
-| 6. เปิด PR | กด Create Pull Request เว็บ GitHub จะเปิดขึ้นมา กรอกฟอร์มให้เรียบร้อยแล้วกด Create pull request |
-| 7. Review | ใส่ชื่อเพื่อนอีกคนในช่อง Reviewers ให้ช่วย review ถ้ามี comment ก็แก้ตาม |
-| 8. Merge | พอได้ Approve แล้วกด **Squash and merge** ต่อด้วย Delete branch |
+| 6. เปิด PR | กด Create Pull Request เว็บ GitHub จะเปิดขึ้นมา กรอกฟอร์มให้เรียบร้อยแล้วกด Create pull request ไม่ต้องใส่ Reviewer ระบบใส่เจ้าของ repo ให้เอง |
+| 7. รอ review | เจ้าของ repo จะ review ถ้ามี comment ขอให้แก้ ก็แก้ใน branch เดิมแล้ว Commit กับ Push origin อีกรอบ PR จะอัปเดตเอง |
+| 8. Merge | เจ้าของ repo เป็นคนกด Squash and merge แล้ว branch จะถูกลบให้อัตโนมัติ จากนั้นกลับไปข้อ 1 |
 
-Heads up: `main` ถูกล็อกไว้ จะ merge ได้ต้องผ่าน Pull Request และได้ Approve จากเพื่อน 1 คนก่อน
+Heads up: `main` ถูกล็อกไว้ คนที่ review และ merge เข้า `main` ได้มีแค่เจ้าของ repo คนอื่นเปิด PR ได้อย่างเดียว ทีละขั้นแบบละเอียดพร้อมวิธีแก้ปัญหาที่เจอบ่อยอยู่ใน [04-send-work.md](04-send-work.md)
 
 ### ตั้งชื่อ branch กับ commit
 
@@ -76,14 +76,14 @@ commit message ให้ขึ้นต้นด้วยประเภทข�
 | `docs:` | แก้ doc | `docs: เพิ่มผลทดสอบ A1-A5` |
 | `chore:` | งานจุกจิกอื่น ๆ | `chore: อัปเดตข้อมูลตัวอย่าง` |
 
-## Review PR ของเพื่อน
+## อ่าน PR ของเพื่อน
 
-ช่วยกัน review ไว้ ทุกคนจะได้เข้าใจโค้ดทั้งโปรเจกต์ เพราะอาจารย์จะถาม
+คนตัดสินว่า PR ไหน merge ได้มีแค่เจ้าของ repo แต่ทุกคนควรแวะอ่าน PR ของเพื่อนไว้ด้วย จะได้เข้าใจ code ทั้งโปรเจกต์ เพราะอาจารย์จะถามภาพรวม
 
 1. อ่านฟอร์ม PR ก่อน ว่าเพื่อนทำอะไรไปบ้าง test อะไรไปแล้ว
 2. ไปที่แท็บ Files changed อ่านโค้ดทีละบรรทัด ตรงไหนไม่เข้าใจก็กด `+` ที่บรรทัดนั้นแล้วถามได้เลย
-3. ลอง run เอง: ใน GitHub Desktop สลับ Current Branch ไปเป็น branch ของเพื่อน แล้ว run โปรแกรมดู
-4. ถ้าโอเคก็กด Review changes แล้วเลือก Approve ถ้ามีอะไรต้องแก้ให้เลือก Request changes แล้วบอกด้วยว่าต้องแก้ตรงไหน
+3. อยากลอง run เอง: ใน GitHub Desktop สลับ Current Branch ไปเป็น branch ของเพื่อน แล้ว run โปรแกรมดู
+4. ไม่ต้องกด Approve หรือ Request changes เจออะไรแปลก ๆ ก็ comment ทิ้งไว้ เดี๋ยวเจ้าของ repo ดูต่อ
 
 ## ลอง function ก่อนมีหน้าจอ
 

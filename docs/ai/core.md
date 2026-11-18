@@ -84,11 +84,11 @@ step ของแต่ละ function อยู่ใน `docs/tasks/core.md` �
 2. แตกเป็น step เล็ก ๆ ให้เขียนทีละ step แล้ว paste มาให้ดู review แล้วค่อยไปต่อ
 3. test ใน Python shell ก่อนมีหน้าจอ ตามหัวข้อ "ลอง function ก่อนมีหน้าจอ" ใน `docs/03-workflow.md` run `python tools/reset_data.py` ก่อนทุกรอบ ตัวอย่างที่ใช้เช็กได้เลยคือ `get_balance(app, "9990000001")` ต้องได้ `(55, 30)`
 4. ถามคำถามเช็กความเข้าใจ 2–3 ข้อ เช่น "ถ้า CSV มีแถวที่ reward เป็นตัวอักษร จะเกิดอะไรขึ้นทีละขั้น"
-5. พาทำ git: branch `core/ชื่องาน` เช่น `core/models`, commit `feat: ...`, เปิด PR ใส่เลข Issue ของสัปดาห์นั้น (PR สุดท้ายของสัปดาห์ค่อยเขียน `Closes #เลข`) ช่วงที่เพื่อนยังไม่เข้า repo ยังไม่มีใคร approve ได้ เจ้าของ repo เป็น admin เลย merge ข้ามไปได้ แต่พอเพื่อนเข้ามาแล้วให้เพื่อน review ตามปกติ
+5. พาทำ git: branch `core/ชื่องาน` เช่น `core/models`, commit `feat: ...`, เปิด PR ใส่เลข Issue ของสัปดาห์นั้น (PR สุดท้ายของสัปดาห์ค่อยเขียน `Closes #เลข`) เจ้าของ repo เป็นคนเดียวที่ merge เข้า `main` ได้ (เป็น admin ที่ข้าม ruleset ได้) เลย merge PR ของตัวเองได้ทันทีด้วย Squash and merge
 
-## ช่วย review PR ของเพื่อน
+## review และ merge PR ของเพื่อน
 
-ถ้าเพื่อนเปิด PR มา ช่วยเช็กตามนี้ แล้วให้เจ้าของ repo เป็นคนพิมพ์ comment เอง
+เจ้าของ repo เป็นคนเดียวที่ review และ merge ได้ (ตั้ง ruleset ไว้แล้ว เพื่อนเปิด PR ได้อย่างเดียว) ทุก PR จะขอ review จากเจ้าของ repo ให้อัตโนมัติผ่าน `.github/CODEOWNERS` ถ้าเพื่อนเปิด PR มา ช่วยเช็กตามนี้ แล้วให้เจ้าของ repo เป็นคนพิมพ์ comment และกดเอง
 
 - แก้เฉพาะไฟล์ของชุดตัวเองมั้ย
 - ชื่อ function กับ parameter ตรงกับ doc มั้ย
@@ -96,6 +96,7 @@ step ของแต่ละ function อยู่ใน `docs/tasks/core.md` �
 - เช็ก rule ครบก่อนแก้ data มั้ย ใช้ค่าจาก `config` มั้ย แต้มขยับผ่าน `add_transaction()` อย่างเดียวมั้ย
 - PR บอกว่า test อะไรไปแล้ว และ run ได้จริงบนเครื่องเรามั้ย (สลับไป branch นั้นใน GitHub Desktop แล้ว run ดู)
 - ให้เพื่อนอธิบาย code สักบรรทัดสองบรรทัดใน comment ถ้าอธิบายไม่ได้ยังไม่ควร merge
+- ผ่านหมดแล้วกด Squash and merge (repo ตั้งให้ merge ได้แบบนี้แบบเดียว และลบ branch ให้อัตโนมัติ) ถ้าต้องแก้ ให้ comment บอกชัด ๆ ว่าแก้ตรงไหน เพื่อนจะแก้ใน branch เดิมแล้ว push มาใหม่
 
 ## test case รายงาน และคลิป
 

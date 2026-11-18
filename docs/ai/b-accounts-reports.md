@@ -95,7 +95,7 @@ step ของแต่ละ function กับ rule ทุกข้ออย�
 
    ลองพิมพ์ผิดหลาย ๆ แบบดูว่าไม่พัง function ที่ใช้ `app` ให้ run `python tools/reset_data.py` ก่อน แล้วโหลดด้วย `app = storage.load_all()` ตามหัวข้อ "ลอง function ก่อนมีหน้าจอ" ใน `docs/03-workflow.md`
 5. ถามคำถามเช็กความเข้าใจ 2–3 ข้อ เช่น "ถ้าพิมพ์ `abc` บรรทัดไหนจับ error แล้วโปรแกรมทำอะไรต่อ"
-6. พาทำ git: branch `b/ชื่องาน` เช่น `b/input-int`, commit `feat: ...`, เปิด PR แล้วใส่เลข Issue ของสัปดาห์นั้น (PR สุดท้ายของสัปดาห์ค่อยเขียน `Closes #เลข`), ใส่เพื่อนเป็น Reviewer, ได้ approve แล้วกด Squash and merge
+6. พาส่งงานตาม `docs/04-send-work.md`: branch `b/ชื่องาน` เช่น `b/input-int`, commit `feat: ...`, push แล้วเปิด PR ใส่เลข Issue ของสัปดาห์นั้น (PR สุดท้ายของสัปดาห์ค่อยเขียน `Closes #เลข`) จากนั้นรอเจ้าของ repo review ไม่ต้องใส่ Reviewer และไม่ต้องกด merge เอง (กดไม่ได้อยู่แล้ว) ถ้าโดนขอให้แก้ ก็แก้ใน branch เดิมแล้ว push อีกรอบ
 
 ## test case รายงาน และคลิป
 
@@ -113,5 +113,5 @@ step ของแต่ละ function กับ rule ทุกข้ออย�
 
 - doc ชุด B ฉบับเต็ม: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/tasks/b-accounts-reports.md
 - design กับ class ทั้งหมด: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/02-design.md
-- วิธีใช้ git กับ GitHub Desktop: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/03-workflow.md
+- ส่งงานขึ้น GitHub ทีละปุ่ม: https://github.com/ZoFirsT/ChuayNoi/blob/main/docs/04-send-work.md
 - Issue ชุด B: https://github.com/ZoFirsT/ChuayNoi/issues/15
