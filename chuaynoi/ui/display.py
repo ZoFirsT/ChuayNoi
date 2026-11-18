@@ -76,3 +76,14 @@ def print_header(title, subtitle=""):
     if subtitle != "":
         print(" " + subtitle)
     print(line)
+
+
+def print_menu(options, zero_label):
+    """พิมพ์ตัวเลือกเป็นข้อ ๆ [1] ถึง [n] ปิดท้ายด้วย [0] กับเส้นคั่น (ฟังก์ชันช่วย)
+
+    ใช้ได้ทุกหน้าจอ เช่น print_menu(["ยืนยันงาน", "ปิดรับ"], "กลับ")
+    """
+    for i in range(len(options)):
+        print(f" [{i + 1}] {options[i]}")
+    print(f" [0] {zero_label}")
+    print("-" * config.SCREEN_WIDTH)

@@ -26,7 +26,7 @@
 | `User` | แกนกลาง `core/models.py` | สร้างผู้ใช้ใหม่ |
 | `app.find_user()` | แกนกลาง `core/storage.py` | เช็กรหัสซ้ำ และใช้ตอนเข้าสู่ระบบ |
 | `add_transaction()` | แกนกลาง `wallet/service.py` | ให้ 100 แต้มตอนสมัคร |
-| `print_table()`, `print_header()` | แกนกลาง `ui/display.py` | โชว์สถิติเป็นตาราง |
+| `print_table()`, `print_header()`, `print_menu()` | แกนกลาง `ui/display.py` | โชว์สถิติเป็นตาราง หัวจอ และเมนู `[1] ... [0] กลับ` |
 
 ส่วน `ui/inputs.py` ไม่ต้องพึ่งของใครเลย เลยเริ่มเขียนและ test ได้ตั้งแต่วันแรก
 

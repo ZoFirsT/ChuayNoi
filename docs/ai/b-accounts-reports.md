@@ -39,7 +39,7 @@ repo อยู่ที่ https://github.com/ZoFirsT/ChuayNoi ส่งงา�
 
 step ของแต่ละ function กับ rule ทุกข้ออยู่ใน `docs/tasks/b-accounts-reports.md` (รวมถึง key ทั้งหมดของ dict ที่ `summarize_board` ต้องคืน) ชื่อ function กับ parameter ต้องตามนี้เป๊ะ ๆ ห้ามเปลี่ยน
 
-ของที่ต้องเรียกใช้จากแกนกลาง: class `User` (`core/models.py`), `add_transaction()` (`wallet/service.py`), `storage.save_all()`, `storage.append_log()` (`core/storage.py`), `print_table()`, `print_header()` (`ui/display.py`)
+ของที่ต้องเรียกใช้จากแกนกลาง: class `User` (`core/models.py`), `add_transaction()` (`wallet/service.py`), `storage.save_all()`, `storage.append_log()` (`core/storage.py`), `print_table()`, `print_header()`, `print_menu()` (`ui/display.py`)
 
 `ui/inputs.py` ไม่ต้องรอใครเลย เริ่มได้ทันที ส่วนที่เหลือรอแกนกลางเสร็จก่อน (22 พ.ย.)
 

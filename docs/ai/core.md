@@ -35,7 +35,7 @@ repo อยู่ที่ https://github.com/ZoFirsT/ChuayNoi ส่งงา�
 | `chuaynoi/core/storage.py` | class `AppData` (`find_user`, `find_request`, `find_engagement`, `next_id`) กับ `load_csv(path, fields, from_row)`, `save_csv(path, fields, items)`, `append_log(student_id, action)`, `load_all()`, `save_all(app)` |
 | `chuaynoi/wallet/service.py` | `add_transaction(app, student_id, kind, d_available, d_held, request_id="", note="")` คืน `Transaction`, `get_balance(app, student_id)` คืน `(available, held)`, `list_history(app, student_id, limit=10)` |
 | `chuaynoi/wallet/menu.py` | `screen_wallet(app)` |
-| `chuaynoi/ui/display.py` | `display_width(text)`, `print_table(headers, rows)`, `print_header(title, subtitle="")` |
+| `chuaynoi/ui/display.py` | `display_width(text)`, `print_table(headers, rows)`, `print_header(title, subtitle="")`, `print_menu(options, zero_label)` |
 | `chuaynoi/app.py` | `run()`, `start_screen(app)`, `main_menu(app)` |
 | `chuaynoi/config.py` | ดูแลค่าคงที่ ถ้าจะแก้ต้องบอกทีมก่อน |
 
