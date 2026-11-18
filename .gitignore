@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# ข้อมูลที่โปรแกรมใช้ตอนรัน (สร้างใหม่ด้วย python tools/reset_data.py)
+data/
+
+# ไฟล์ที่โปรแกรมส่งออก
+reports/*.txt
+
+# ไฟล์ส่งงาน
+*.zip
+
+# รายงานมีชื่อ รหัสนักศึกษา และอีเมลของสมาชิก ไม่ขึ้น repo สาธารณะ
+report-template(framework)/
+Report/
+
+# เอกสารส่วนตัวของเจ้าของ repo
+_local/
