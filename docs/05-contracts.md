@@ -262,7 +262,7 @@ feature ระดับ Could คือ `REVISION` กับ `WITHDRAWN` ตอ�
 | #2 | A · 2 | `create_request`, `apply_to_request`, `submit_work` ผ่าน A5–A10, ครึ่งสมัครของ A11 (ได้ E0004) กับ A12 ในรอบเดียวหลัง reset และแต้มรวมยัง 400 |
 | #3 | A · 3 | `approve_work`, `close_request` ผ่าน A11, A13–A15 และรัน A1–A16 ผ่านหน้าจอทั้ง 4 ในรอบเดียว บรรทัด log ตรงกับข้อ 5 และ Ctrl+C ในหน้าจอของ A แล้ว save กับออกได้ |
 | #4 | A · 4 | A1–A16 จดผลจริงพร้อมภาพหน้าจอ และเขียนรายงานส่วนของ A แล้ว |
-| #5 | B · 1 | `ui/inputs.py` ผ่าน B1–B7 กับ IN1–IN3 Ctrl+C ตอนอยู่ที่ prompt แล้ว save กับออกได้ และ merge ภายใน 26 พ.ย. 2569 |
+| #5 | B · 1 | `ui/inputs.py` ผ่าน B1–B7 กับ IN1–IN3 Ctrl+C ตอนอยู่ที่ prompt แล้ว save กับออกได้ และ merge ภายใน 22 พ.ย. 2569 |
 | #6 | B · 2 | `register_user`, `login_user` ผ่าน B8–B10 สองหน้าจอใช้ได้จากหน้าแรก B13 ผ่าน และ log `REGISTER`/`LOGIN` ตามข้อ 5 |
 | #7 | B · 3 | `summarize_board` ผ่าน B11 `export_summary_txt` กับ `screen_reports` ผ่าน B12 และ log `EXPORT_REPORT` ตามข้อ 5 |
 | #8 | B · 4 | B1–B13 จดผลจริงพร้อมภาพหน้าจอ และเขียนรายงานส่วนของ B แล้ว |
