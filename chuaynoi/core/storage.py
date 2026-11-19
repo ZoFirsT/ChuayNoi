@@ -81,10 +81,11 @@ def load_csv(path, fields, from_row):
     """อ่าน CSV 1 ไฟล์เป็น list ของ object
 
     รับ: path ไฟล์, fields header ที่ใช้ตอนสร้างไฟล์ใหม่, from_row function แปลง dict 1 แถวเป็น object
-    คืน: (items, skipped) skipped คือจำนวนแถวที่ from_row raise ValueError หรือ KeyError แล้วถูกข้าม
+    คืน: (items, skipped) skipped คือจำนวนแถวที่อ่านไม่ผ่านแล้วถูกข้าม
     แก้ data: ถ้ายังไม่มีไฟล์ สร้างไฟล์ที่มีแต่ header (กับ folder data/ ถ้ายังไม่มี)
-    error: จับแค่ ValueError กับ KeyError ของแต่ละแถว
-        แถวที่ column ไม่ครบจน from_row raise TypeError ไม่ถูกจับ โปรแกรมจะหยุด
+    error: จับ ValueError, KeyError, TypeError, AttributeError ของแต่ละแถว แล้วข้ามแถวนั้น
+        แถวที่ column ไม่ครบ DictReader ใส่ None ให้ช่องที่ขาด จึงเกิด TypeError (int(None))
+        หรือ AttributeError (None.split) ซึ่งถูกข้ามเหมือนกัน
     ดู: docs/05-contracts.md ข้อ 2
     """
     os.makedirs(config.DATA_DIR, exist_ok=True)
@@ -99,7 +100,7 @@ def load_csv(path, fields, from_row):
         for row in reader:
             try:
                 items.append(from_row(row))
-            except (ValueError, KeyError):
+            except (ValueError, KeyError, TypeError, AttributeError):
                 skipped += 1
     return (items, skipped)
 
@@ -129,7 +130,7 @@ def append_log(student_id, action):
     รับ: student_id รหัสผู้ทำ, action ข้อความการกระทำ เช่น "LOGIN" (ชื่อ action อยู่ใน docs/05-contracts.md ข้อ 5)
     คืน: ไม่คืนค่า
     แก้ data: ต่อท้าย activity_log.txt
-    error: จับ OSError แล้ว print() บรรทัดเตือน (ไม่มี prefix [!]) โปรแกรมไม่หยุด
+    error: จับ OSError แล้ว print() บรรทัดเตือนที่ขึ้นต้นด้วย [!] โปรแกรมไม่หยุด
     ดู: docs/05-contracts.md ข้อ 5
     """
     time_text = datetime.now().strftime(config.TIME_FORMAT)
@@ -138,7 +139,7 @@ def append_log(student_id, action):
         with open(config.ACTIVITY_LOG_FILE, "a", encoding=config.TEXT_ENCODING) as file:
             file.write(line)
     except OSError:
-        print(f"ไม่สามารถเขียน log ได้: {line.strip()}")
+        print(f"[!] ไม่สามารถเขียน log ได้: {line.strip()}")
 
 
 def load_all():
@@ -146,7 +147,7 @@ def load_all():
 
     คืน: AppData ที่พร้อมใช้ (skipped_rows รวมแถวที่ข้ามของทั้ง 4 ไฟล์)
     แก้ data: สร้าง folder data/ กับไฟล์ที่ยังไม่มี (แค่ header)
-    error: ไม่จับอะไร Ctrl+C ตอนโหลด หรือแถวที่ column ไม่ครบ ทำให้โปรแกรมหยุด
+    error: ไม่จับอะไรเอง แถวที่อ่านไม่ผ่าน load_csv ข้ามให้แล้ว Ctrl+C ตอนโหลดหลุดออกไปให้ app.run() จับ
     ดู: docs/05-contracts.md ข้อ 2
     """
     app = AppData()

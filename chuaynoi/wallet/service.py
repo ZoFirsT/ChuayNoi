@@ -15,14 +15,15 @@ from chuaynoi.core.models import Transaction
 
 
 def add_transaction(app, student_id, kind, d_available, d_held, request_id="", note=""):
-    """เพิ่มรายการแต้ม 1 รายการ แล้วเขียนต่อท้าย transactions.csv ทันที
+    """เพิ่มรายการแต้ม 1 รายการ เขียนต่อท้าย transactions.csv ทันที แล้วค่อยเพิ่มเข้า app.transactions
 
     รับ: kind ต้องอยู่ใน config.TRANSACTION_KINDS, d_available กับ d_held
         คือแต้มที่เปลี่ยน (+ เพิ่ม, - ลด), request_id ใส่ "" ถ้าไม่เกี่ยวกับประกาศ
     คืน: Transaction ตัวที่เพิ่งสร้าง (รหัส T + 6 หลัก)
-    แก้ data: ต่อท้าย app.transactions และ transactions.csv ไม่ต้องรอ save_all()
+    แก้ data: เขียนต่อท้าย transactions.csv ก่อน สำเร็จแล้วค่อยต่อท้าย app.transactions
+        ไม่ต้องรอ save_all()
     error: raise ValueError ถ้า kind ไม่ถูก (ตอนนั้นยังไม่แก้อะไร)
-        ถ้าเปิดไฟล์ไม่ได้ OSError จะหลุดออกไป และรายการค้างอยู่ใน app.transactions แล้ว
+        ถ้าเขียนไฟล์ไม่ได้ OSError จะหลุดออกไป และ app.transactions ไม่เปลี่ยน
     ดู: docs/05-contracts.md ข้อ 2
     """
     if kind not in config.TRANSACTION_KINDS:
@@ -34,7 +35,6 @@ def add_transaction(app, student_id, kind, d_available, d_held, request_id="", n
     txn = Transaction(
         txn_id, created_at, student_id, kind, d_available, d_held, request_id, note
     )
-    app.transactions.append(txn)
 
     path = config.TRANSACTIONS_FILE
     is_new_file = not os.path.exists(path) or os.path.getsize(path) == 0
@@ -43,6 +43,8 @@ def add_transaction(app, student_id, kind, d_available, d_held, request_id="", n
         if is_new_file:
             writer.writerow(config.TRANSACTION_FIELDS)
         writer.writerow(txn.to_row())
+
+    app.transactions.append(txn)
 
     return txn
 

@@ -132,9 +132,9 @@
 | function | ทำอะไร |
 | --- | --- |
 | `AppData.next_id(prefix, existing_ids, digits)` | หาเลขมากสุดใน `existing_ids` บวก 1 แล้วเติม 0 ให้ครบ `digits` หลัก ถ้า list ว่างเริ่มที่ 1 |
-| `load_csv(path, fields, from_row)` | สร้าง folder `data/` กับไฟล์ที่มีแค่ header ถ้ายังไม่มี แล้วคืน `([], 0)` ถ้ามีไฟล์ อ่านทีละแถว แถวที่ `from_row` raise `ValueError` หรือ `KeyError` ถูกข้ามและนับ สุดท้ายคืน `(items, skipped)` |
+| `load_csv(path, fields, from_row)` | สร้าง folder `data/` กับไฟล์ที่มีแค่ header ถ้ายังไม่มี แล้วคืน `([], 0)` ถ้ามีไฟล์ อ่านทีละแถว แถวที่ `from_row` raise `ValueError`, `KeyError`, `TypeError` หรือ `AttributeError` ถูกข้ามและนับ (แถวที่ column ไม่ครบ `DictReader` ใส่ `None` ให้ช่องที่ขาด จึงเกิดสองตัวหลัง) สุดท้ายคืน `(items, skipped)` |
 | `save_csv(path, fields, items)` | เขียน header แล้วตามด้วย `item.to_row()` ทุกตัว ถ้าเจอ `OSError` คืน `False` |
-| `append_log(student_id, action)` | ต่อท้าย `activity_log.txt` เป็น `[YYYY-MM-DD HH:MM] รหัส action` ถ้าเจอ `OSError` พิมพ์เตือนแล้วทำต่อ |
+| `append_log(student_id, action)` | ต่อท้าย `activity_log.txt` เป็น `[YYYY-MM-DD HH:MM] รหัส action` ถ้าเจอ `OSError` พิมพ์ `[!] ไม่สามารถเขียน log ได้: ...` แล้วทำต่อ |
 | `load_all()` | โหลดทั้ง 4 ไฟล์เข้า `AppData` และรวมจำนวนแถวที่ข้ามไว้ใน `app.skipped_rows` |
 | `save_all(app)` | เขียนทับ users, requests, engagements และคืน `True` ถ้าเขียนครบ ไม่แตะ transactions เพราะ `add_transaction` ต่อท้ายไฟล์ให้ทุกครั้งอยู่แล้ว |
 
@@ -145,9 +145,10 @@ action ที่ใช้ใน log: `REGISTER`, `LOGIN`, `CREATE_REQUEST`, `APP
 - `add_transaction(app, student_id, kind, d_available, d_held, request_id="", note="")` ทำตามลำดับ
   1. เช็ก `kind` ถ้าไม่อยู่ใน `config.TRANSACTION_KINDS` raise `ValueError`
   2. ขอรหัสใหม่จาก `app.next_id("T", ..., 6)`
-  3. สร้าง `Transaction` แล้วเพิ่มเข้า `app.transactions`
+  3. สร้าง `Transaction`
   4. เขียน 1 แถวต่อท้าย `transactions.csv` (ถ้าไฟล์ว่าง เขียน header ก่อน)
-  5. คืน `Transaction`
+  5. เขียนไฟล์สำเร็จแล้วค่อยเพิ่มเข้า `app.transactions` ถ้าเขียนไม่ได้ `OSError` หลุดออกไปตั้งแต่ข้อ 4 และ memory ไม่เปลี่ยน
+  6. คืน `Transaction`
 - `get_balance(app, student_id)` รวม `d_available` กับ `d_held` ของคนนี้ แล้วคืน `(available, held)`
 - `list_history(app, student_id, limit=10)` คืนรายการของคนนี้ ใหม่สุดก่อน ไม่เกิน `limit`
 
@@ -160,19 +161,9 @@ action ที่ใช้ใน log: `REGISTER`, `LOGIN`, `CREATE_REQUEST`, `APP
 
 ### app.py
 
-- `run()` เรียก `load_all()` ก่อน ถ้ามีแถวที่ข้าม พิมพ์ `[i] ข้าม {N} แถวที่อ่านไม่ผ่าน` จากนั้นวน `start_screen` แล้ว `main_menu` จนกว่าจะเลือกออก ลูปนี้ครอบด้วย `try … except KeyboardInterrupt` กด Ctrl+C ที่ไหนข้างใน จะพิมพ์บรรทัดว่างแล้ว `save_all` ได้ผลแล้วพิมพ์ `[OK] บันทึกข้อมูลแล้ว` ไม่ได้ผลพิมพ์ `[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน` เหมือนเลือก `[0] บันทึกและออก`
+- `run()` เรียก `load_all()` ใน `try … except KeyboardInterrupt` ของตัวเอง กด Ctrl+C ตอนกำลังโหลด จะพิมพ์บรรทัดว่างแล้วออกเลยโดยไม่ save เพราะข้อมูลยังโหลดไม่ครบ ถ้า save จะเขียนทับไฟล์ด้วยข้อมูลที่ไม่ครบ โหลดเสร็จแล้วถ้ามีแถวที่ข้าม พิมพ์ `[i] ข้าม {N} แถวที่อ่านไม่ผ่าน` จากนั้นวน `start_screen` แล้ว `main_menu` จนกว่าจะเลือกออก ลูปนี้ครอบด้วย `try … except KeyboardInterrupt` กด Ctrl+C ที่ไหนข้างใน จะพิมพ์บรรทัดว่างแล้ว `save_all` ได้ผลแล้วพิมพ์ `[OK] บันทึกข้อมูลแล้ว` ไม่ได้ผลพิมพ์ `[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน` เหมือนเลือก `[0] บันทึกและออก`
 - `start_screen(app)` ใช้ `inputs.input_int` ให้เลือก เข้าสู่ระบบ สมัคร หรือออก แล้วเรียก `accounts_menu.screen_login` หรือ `screen_register` คืน `True` เมื่อ login สำเร็จ `False` เมื่อเลือกออก
 - `main_menu(app)` โชว์ชื่อกับยอดแต้มล่าสุดทุกครั้งที่กลับจากหน้าจอ แล้วเรียกหน้าจอตามเลขที่เลือก (`board_menu.screen_board`, `screen_post`, `screen_my_requests`, `screen_my_jobs`, `wallet_menu.screen_wallet`, `reports_menu.screen_reports`) คืน `"exit"` หรือ `"logout"`
-
-## ข้อจำกัดที่รู้อยู่แล้ว
-
-code แกนกลางตอนนี้ยังมีจุดอ่อนพวกนี้ เจ้าของ repo จะแก้ใน PR แยกทีหลัง ระหว่างนี้อย่าเขียน code ชุดอื่นโดยพึ่งพฤติกรรมเหล่านี้
-
-- `add_transaction` เพิ่มรายการเข้า `app.transactions` ก่อนเขียนไฟล์ และไม่จับ `OSError` ถ้าเขียนไฟล์ไม่ได้ รายการจะค้างอยู่ใน memory แต่ไม่อยู่ในไฟล์
-- `append_log` พิมพ์คำเตือนตอนเขียน log ไม่ได้ แต่ไม่มี `[!]` นำหน้า
-- `load_csv` จับแค่ `ValueError` กับ `KeyError` แถวที่มี column ไม่ครบจะเกิด `TypeError` หรือ `AttributeError` แล้วโปรแกรมหยุด
-- `load_all()` อยู่นอก `try` ของ `run()` กด Ctrl+C ตอนกำลังโหลดเลยไม่ถูกจับ และ `EOFError` ไม่ถูกจับที่ไหนเลย
-- `screen_wallet` ไม่มี `[0] กลับ` เพราะมีแค่การรอ Enter
 
 ## test case
 

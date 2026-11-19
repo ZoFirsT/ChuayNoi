@@ -32,15 +32,22 @@ def run():
     """เปิดโปรแกรม โหลด data แล้ววนหน้าแรกกับ เมนูหลัก จนกว่าผู้ใช้จะเลือกออก
 
     คืน: ไม่คืนค่า
-    แก้ data: ตอนจบ (เลือกออก หรือกด Ctrl+C) เรียก storage.save_all(app)
+    แก้ data: ตอนจบ (เลือกออก หรือกด Ctrl+C ในหน้าแรกหรือเมนูหลัก) เรียก storage.save_all(app)
         สำเร็จ print "[OK] บันทึกข้อมูลแล้ว" ไม่สำเร็จ print "[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน"
         ถ้า load ข้ามแถวไป print "[i] ข้าม {n} แถวที่อ่านไม่ผ่าน" ก่อนเข้าหน้าแรก
         เมื่อ main_menu คืน "logout" เคลียร์ app.current_user_id เป็น "" แล้วกลับหน้าแรก
-    error: Ctrl+C ที่ไหนก็ได้ในหน้าแรกหรือ เมนูหลัก ถูกจับที่นี่ (print บรรทัดว่าง แล้ว save เหมือนออกปกติ ไม่มี Traceback)
-        ไม่ครอบคลุม Ctrl+C ตอน load_all() กับ EOFError
+    error: Ctrl+C ตอน load_all() ถูกจับด้วย try แยก print บรรทัดว่างแล้วออกเลยโดยไม่ save
+            (ข้อมูลยังโหลดไม่ครบ ถ้า save จะเขียนทับไฟล์ด้วยข้อมูลไม่ครบ)
+        Ctrl+C ที่ไหนก็ได้ในหน้าแรกหรือเมนูหลัก ถูกจับที่นี่ (print บรรทัดว่าง แล้ว save เหมือนออกปกติ ไม่มี Traceback)
+        EOFError ไม่จับ (IN4 ใน docs/05-contracts.md ข้อ 3)
     ดู: docs/05-contracts.md ข้อ 7
     """
-    app = storage.load_all()
+    try:
+        app = storage.load_all()
+    except KeyboardInterrupt:
+        print()
+        return
+
     if app.skipped_rows > 0:
         print(f"[i] ข้าม {app.skipped_rows} แถวที่อ่านไม่ผ่าน")
 

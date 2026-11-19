@@ -42,7 +42,7 @@ flowchart TD
 
 | ของ | รับประกันอะไร |
 | --- | --- |
-| `storage.load_all()` | คืน `AppData` สร้าง `data/` กับ CSV ที่ขาด (มีแต่ header) ข้ามแถวที่ `from_row` ปล่อย `ValueError` หรือ `KeyError` แล้วนับใน `app.skipped_rows` ข้อจำกัด: แถวที่ column ไม่ครบจะเกิด `TypeError` หรือ `AttributeError` และโปรแกรมหยุด |
+| `storage.load_all()` | คืน `AppData` สร้าง `data/` กับ CSV ที่ขาด (มีแต่ header) ข้ามแถวที่ `from_row` ปล่อย `ValueError`, `KeyError`, `TypeError` หรือ `AttributeError` (รวมแถวที่ column ไม่ครบ) แล้วนับใน `app.skipped_rows` |
 | `app.users`, `.requests`, `.engagements`, `.transactions` | list ของ object เรียงตามไฟล์ เก่าสุดอยู่หน้า |
 | `app.current_user_id` | รหัสของคนที่ login อยู่ ถ้าไม่มีใครเป็น `""` และกลับเป็น `""` ตอน "สลับผู้ใช้" |
 | `app.find_user`, `find_request`, `find_engagement` | คืน object ตัวจริง (แก้ที่ได้มา `app` เปลี่ยนด้วย) หรือ `None` |
@@ -50,11 +50,11 @@ flowchart TD
 | `HelpRequest.total_cost()` | `reward * slots` |
 | `HelpRequest.count_used_slots(engagements)` | นับ engagement ของประกาศนี้ที่ status อยู่ใน `ACTIVE_ENGAGEMENT_STATUSES` หรือเป็น `ENG_APPROVED` |
 | `Engagement.change_status(new_status)` | ไปได้ตาม `config.ALLOWED_TRANSITIONS` ก็เปลี่ยน ถ้าไม่ได้ raise `ValueError("เปลี่ยน status จาก {old} ไป {new} ไม่ได้")` และไม่แก้อะไร |
-| `add_transaction(app, student_id, kind, d_available, d_held, request_id="", note="")` | `kind` ผิด raise `ValueError` และไม่แก้อะไร ถ้าถูก เพิ่มใน `app.transactions` กับต่อท้าย `transactions.csv` พร้อมกัน แล้วคืน `Transaction` ข้อจำกัด: ถ้าเปิดไฟล์ไม่ได้ `OSError` จะหลุดออกไป และรายการอยู่ใน memory แล้ว |
+| `add_transaction(app, student_id, kind, d_available, d_held, request_id="", note="")` | `kind` ผิด raise `ValueError` และไม่แก้อะไร ถ้าถูก ต่อท้าย `transactions.csv` ก่อน สำเร็จแล้วค่อยเพิ่มใน `app.transactions` แล้วคืน `Transaction` ถ้าเขียนไฟล์ไม่ได้ `OSError` หลุดออกไป และ `app.transactions` ไม่เปลี่ยน |
 | `get_balance(app, student_id)` | คืน `(available, held)` เป็น int |
 | `list_history(app, student_id, limit=10)` | ใหม่สุดก่อน ไม่เกิน `limit` รายการ |
 | `storage.save_all(app)` | เขียนทับ users, requests, engagements คืน `True` หรือ `False` ไม่เคยปล่อย `OSError` |
-| `storage.append_log(student_id, action)` | ต่อท้าย `[YYYY-MM-DD HH:MM] {student_id} {action}` ถ้าเขียนไม่ได้พิมพ์เตือน (ไม่มี prefix) ไม่ปล่อย `OSError` |
+| `storage.append_log(student_id, action)` | ต่อท้าย `[YYYY-MM-DD HH:MM] {student_id} {action}` ถ้าเขียนไม่ได้พิมพ์ `[!] ไม่สามารถเขียน log ได้: {บรรทัดนั้น}` ไม่ปล่อย `OSError` |
 | `display.print_header(title, subtitle="")` | เส้น `=` ยาว 64, ` {title}`, ` {subtitle}` ถ้าไม่ว่าง แล้วเส้น `=` อีกเส้น |
 | `display.print_menu(options, zero_label)` | ` [1] …` ถึง ` [n] …` แล้ว ` [0] {zero_label}` แล้วเส้น `-` ยาว 64 |
 | `display.print_table(headers, rows)` | ตารางมีเส้นขอบ จัด column ด้วย `display_width` ตัวเลขชิดขวา ไม่ตัดข้อความ ถ้า `rows` ว่างพิมพ์ `[i] ไม่มีข้อมูล` |
@@ -243,7 +243,8 @@ feature ระดับ Could คือ `REVISION` กับ `WITHDRAWN` ตอ�
 
 - `app.run()` ครอบลูปหน้าแรกกับเมนูหลักด้วย `try … except KeyboardInterrupt` กด Ctrl+C ตรงไหนข้างใน จะพิมพ์บรรทัดว่าง รัน `save_all` แล้วพิมพ์ `[OK] บันทึกข้อมูลแล้ว` หรือ `[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน` เหมือนออกด้วย `[0] บันทึกและออก` ทุกประการ ส่วนรายการแต้มอยู่ในไฟล์แล้วตั้งแต่ตอนเกิด
 - ทุกหน้าจอและทุก function ที่รับ input ต้องตาม IN3 กับ SC10 มี `except:` เปล่า ๆ แค่ตัวเดียว C14 ก็ไม่ผ่าน
-- ข้อจำกัด: กด Ctrl+C ตอน `load_all()` ยังโหลดอยู่ ไม่ถูกจับ และ `EOFError` ไม่ถูกจับ (IN4)
+- กด Ctrl+C ตอน `load_all()` ยังโหลดอยู่ `app.run()` จับด้วย `try` แยกอีกอัน พิมพ์บรรทัดว่างแล้วออกเลยโดยไม่ save เพราะข้อมูลยังโหลดไม่ครบ
+- `EOFError` ไม่จับ (IN4)
 
 ## 8. เสร็จเมื่อ
 

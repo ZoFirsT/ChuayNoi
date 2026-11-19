@@ -302,5 +302,5 @@ stateDiagram-v2
 | function | function หลัก 19 ตัว มี parameter, ค่า default และ return value |
 | List / Tuple / Dictionary | list ใน `app`, tuple ใน `config`, dict ใน `ALLOWED_TRANSITIONS` และในสถิติ |
 | ไฟล์ | อ่าน `"r"`, เขียนทับ `"w"`, เพิ่มต่อท้าย `"a"` ทั้ง `.csv` และ `.txt` |
-| จัดการ error | `try / except` กับ `ValueError`, `KeyError`, `OSError` ส่วน `KeyboardInterrupt` จับที่เดียวคือ `app.run()` |
+| จัดการ error | `try / except` กับ `ValueError`, `KeyError`, `TypeError`, `AttributeError`, `OSError` ส่วน `KeyboardInterrupt` จับที่เดียวคือ `app.run()` |
 | class และ object | 5 class: 4 class ใน `core/models.py` กับ `AppData` ใน `core/storage.py` |
