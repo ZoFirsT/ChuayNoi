@@ -4,7 +4,7 @@
 
 ## โปรเจกต์นี้
 
-ChuayNoi (ช่วยหน่อย) เป็น Python console app ของวิชา CS102 Fundamental of Computer Programming ทำกัน 3 คน เป็นบอร์ดให้นักศึกษาโพสต์ขอให้ช่วยงานสั้น ๆ แล้วจ่ายกันด้วยแต้มน้ำใจ ส่งโปรเจกต์วันที่ 21 ธ.ค. 2569
+ChuayNoi (ช่วยหน่อย) เป็น Python console app ของวิชา CS102 Fundamental of Computer Programming ทำกัน 3 คน เป็นบอร์ดให้นักศึกษาโพสต์ขอให้ช่วยงานสั้น ๆ แล้วจ่ายกันด้วยแต้มน้ำใจ ส่งโปรเจกต์วันที่ 29 พ.ย. 2569
 
 ทุกคนเพิ่งเรียน programming ใช้ได้แค่ของที่เรียนในวิชา (ตัวแปร, if, while, for, function, list, tuple, dict, file, class แบบพื้นฐาน) กับ Python standard library
 

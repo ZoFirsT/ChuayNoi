@@ -10,7 +10,7 @@
 | รายงาน PDF | `Report_CS102_Sec[XX]_Group[YY].pdf` |
 | คลิป 5–7 นาที | ลิงก์ YouTube (Unlisted) หรือ Google Drive |
 
-- วันส่งโปรเจกต์คือ 21 ธ.ค. 2569
+- วันส่งโปรเจกต์คือ 29 พ.ย. 2569
 - เลข section และเลข group ใน `[XX]` กับ `[YY]` (รอยืนยัน)
 - งานของทีมทั้งหมดไล่ใน Issue #9 ส่งโปรเจกต์ทาง Google Form
 

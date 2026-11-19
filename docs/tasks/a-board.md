@@ -105,11 +105,11 @@
 <!-- mirror: docs/03-workflow.md "ชุด A" -->
 | สัปดาห์ | ภายใน | Issue | ทำอะไร |
 | --- | --- | --- | --- |
-| 1 | 23 พ.ย. 2569 | #1 | setup เครื่อง อ่าน doc เขียน `search_requests` และร่าง flowchart ของ `create_request` กับ `approve_work` บนกระดาษ |
-| 2 | 30 พ.ย. 2569 | #2 | `create_request`, `apply_to_request`, `submit_work` ทีละ PR |
-| 3 | 7 ธ.ค. 2569 | #3 | `approve_work`, `close_request` และหน้าจอ 4 หน้า |
-| 4 | 14 ธ.ค. 2569 | #4 | test A1–A16 และรายงานส่วนชุด A |
-| 5 | 21 ธ.ค. 2569 | #9 | คลิปส่วนของตัวเอง และส่งรายงานส่วนของตัวเองให้เจ้าของ repo รวม |
+| 1 | 21 พ.ย. 2569 | #1 | setup เครื่อง อ่าน doc เขียน `search_requests` และร่าง flowchart ของ `create_request` กับ `approve_work` บนกระดาษ |
+| 2 | 24 พ.ย. 2569 | #2 | `create_request`, `apply_to_request`, `submit_work` ทีละ PR |
+| 3 | 26 พ.ย. 2569 | #3 | `approve_work`, `close_request` และหน้าจอ 4 หน้า |
+| 4 | 28 พ.ย. 2569 | #4 | test A1–A16 และรายงานส่วนชุด A |
+| 5 | 29 พ.ย. 2569 | #9 | คลิปส่วนของตัวเอง และส่งรายงานส่วนของตัวเองให้เจ้าของ repo รวม |
 <!-- /mirror -->
 
 ## ก่อนเขียน function ใน service.py

@@ -83,11 +83,11 @@
 <!-- mirror: docs/03-workflow.md "แกนกลาง" -->
 | สัปดาห์ | ภายใน | Issue | ทำอะไร |
 | --- | --- | --- | --- |
-| 1 | 23 พ.ย. 2569 | #10 | `core/models.py`, `core/storage.py`, `wallet/service.py`, `ui/display.py` |
-| 2 | 30 พ.ย. 2569 | #11 | `app.py` (หน้าแรก เมนูหลัก Ctrl+C), `wallet/menu.py` และ review PR `ui/inputs.py` |
-| 3 | 7 ธ.ค. 2569 | #12 | รวมทุกเมนูใน `app.py` ทดสอบทั้งโปรแกรม review PR |
-| 4 | 14 ธ.ค. 2569 | #13 | test C1–C14 และรายงานส่วนแกนกลาง |
-| 5 | 21 ธ.ค. 2569 | #9 | รวมรายงาน PDF แพ็ก ZIP คลิปส่วนของตัวเอง |
+| 1 | 21 พ.ย. 2569 | #10 | `core/models.py`, `core/storage.py`, `wallet/service.py`, `ui/display.py` |
+| 2 | 24 พ.ย. 2569 | #11 | `app.py` (หน้าแรก เมนูหลัก Ctrl+C), `wallet/menu.py` และ review PR `ui/inputs.py` |
+| 3 | 26 พ.ย. 2569 | #12 | รวมทุกเมนูใน `app.py` ทดสอบทั้งโปรแกรม review PR |
+| 4 | 28 พ.ย. 2569 | #13 | test C1–C14 และรายงานส่วนแกนกลาง |
+| 5 | 29 พ.ย. 2569 | #9 | รวมรายงาน PDF แพ็ก ZIP คลิปส่วนของตัวเอง |
 <!-- /mirror -->
 
 ## ไฟล์ที่ดูแล

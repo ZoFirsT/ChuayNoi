@@ -82,7 +82,7 @@
 - function หลัก: `input_int`, `input_text`, `input_choice`, `register_user`, `summarize_board`, `export_summary_txt`
 - function ช่วย: `input_yes_no`, `login_user`
 
-ชุดนี้เริ่มได้เลย ไม่ต้องรอใคร เพราะ `ui/inputs.py` ไม่พึ่ง code ของชุดอื่น **PR ของ `ui/inputs.py` ต้อง merge ภายใน 26 พ.ย. 2569** เพราะทุกหน้าจอรอตัวนี้อยู่ ถ้าจะเลือกชุดนี้ ไปเปิด Issue ที่ติดป้าย `pkg: B-accounts-reports` แล้ว assign ตัวเอง Issue ของแต่ละสัปดาห์คือ #5 (inputs), #6 (สมัครและ login), #7 (สถิติและ export), #8 (test กับรายงาน)
+ชุดนี้เริ่มได้เลย ไม่ต้องรอใคร เพราะ `ui/inputs.py` ไม่พึ่ง code ของชุดอื่น **PR ของ `ui/inputs.py` ต้อง merge ภายใน 22 พ.ย. 2569** เพราะทุกหน้าจอรอตัวนี้อยู่ ถ้าจะเลือกชุดนี้ ไปเปิด Issue ที่ติดป้าย `pkg: B-accounts-reports` แล้ว assign ตัวเอง Issue ของแต่ละสัปดาห์คือ #5 (inputs), #6 (สมัครและ login), #7 (สถิติและ export), #8 (test กับรายงาน)
 
 ## ไฟล์ที่ต้องดูแล
 
@@ -111,11 +111,11 @@
 <!-- mirror: docs/03-workflow.md "ชุด B" -->
 | สัปดาห์ | ภายใน | Issue | ทำอะไร |
 | --- | --- | --- | --- |
-| 1 | 23 พ.ย. 2569 | #5 | setup เครื่อง อ่าน doc เขียน `ui/inputs.py` ให้ครบทั้ง 4 function (merge ภายใน 26 พ.ย. 2569) |
-| 2 | 30 พ.ย. 2569 | #6 | `register_user`, `login_user`, `screen_register`, `screen_login` |
-| 3 | 7 ธ.ค. 2569 | #7 | `summarize_board`, `export_summary_txt`, `screen_reports` |
-| 4 | 14 ธ.ค. 2569 | #8 | test B1–B13 และรายงานส่วนชุด B |
-| 5 | 21 ธ.ค. 2569 | #9 | คลิปส่วนของตัวเอง และส่งรายงานส่วนของตัวเองให้เจ้าของ repo รวม |
+| 1 | 21 พ.ย. 2569 | #5 | setup เครื่อง อ่าน doc เขียน `ui/inputs.py` ให้ครบทั้ง 4 function (merge ภายใน 22 พ.ย. 2569) |
+| 2 | 24 พ.ย. 2569 | #6 | `register_user`, `login_user`, `screen_register`, `screen_login` |
+| 3 | 26 พ.ย. 2569 | #7 | `summarize_board`, `export_summary_txt`, `screen_reports` |
+| 4 | 28 พ.ย. 2569 | #8 | test B1–B13 และรายงานส่วนชุด B |
+| 5 | 29 พ.ย. 2569 | #9 | คลิปส่วนของตัวเอง และส่งรายงานส่วนของตัวเองให้เจ้าของ repo รวม |
 <!-- /mirror -->
 
 ## ก่อนเขียน function ใน service.py

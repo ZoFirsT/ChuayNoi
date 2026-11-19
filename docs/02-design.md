@@ -154,7 +154,7 @@ method: `change_status(new_status)` เปลี่ยน status ตาม rule 
 - column ของแต่ละไฟล์อยู่ใน `config.py` (`USER_FIELDS`, `REQUEST_FIELDS`, `ENGAGEMENT_FIELDS`, `TRANSACTION_FIELDS`) เรียงเหมือนตาราง attribute ด้านบน
 - เปิด CSV ด้วย `encoding=config.CSV_ENCODING` (ค่าคือ `"utf-8-sig"`) กับ `newline=""` ทุกครั้ง Excel จะอ่านภาษาไทยออก และไม่มีบรรทัดว่างแทรก
 - `skills` ใน CSV คั่นด้วย `config.SKILL_SEPARATOR` (`;`)
-- วันที่เวลาใน data กับบนจอเป็นรูปแบบ `config.TIME_FORMAT` ปี ค.ศ. เช่น `2026-11-20 09:00` ส่วนวันที่ในเอกสารเขียนปี พ.ศ. เช่น 21 ธ.ค. 2569
+- วันที่เวลาใน data กับบนจอเป็นรูปแบบ `config.TIME_FORMAT` ปี ค.ศ. เช่น `2026-11-20 09:00` ส่วนวันที่ในเอกสารเขียนปี พ.ศ. เช่น 29 พ.ย. 2569
 
 ## ข้อมูลตัวอย่าง
 
