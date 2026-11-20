@@ -1,20 +1,54 @@
-"""หน้าสรุปสถิติกับ export รายงาน (ชุด B)
-
-ผลขึ้นต้นด้วย "[OK] " ถ้าสำเร็จ หรือ "[!] " ถ้าไม่สำเร็จ ตารางตัวเลขทั้งหมดมาจาก summarize_board()
-ดู: docs/05-contracts.md ข้อ 4
-"""
-
 from chuaynoi.core import storage
 from chuaynoi.reports import service
 from chuaynoi.ui import display, inputs
 
 
-def screen_reports(app):
-    """เมนู 6 โชว์สถิติเป็นตาราง แล้วถามว่าจะส่งออกเป็น .txt ไหม
+def show_summary(summary):
+    display.print_table(
+        ["รายการ", "ค่า"],
+        [
+            ["ผู้ใช้ทั้งหมด (คน)", summary["total_users"]],
+            ["ประกาศทั้งหมด (รายการ)", summary["total_requests"]],
+            ["แต้มที่โอนให้ผู้ช่วยแล้ว (แต้ม)", summary["points_paid"]],
+            ["แต้มเฉลี่ยต่อคน (แต้ม)", summary["avg_reward"]],
+        ],
+    )
 
-    ถาม: ยืนยัน y/n ว่าจะส่งออก (ตอบ n รอ Enter แล้วกลับ ไม่มีข้อความ)
-    คืน: None
-    แก้ data: ไม่ save ส่งออกสำเร็จ log "EXPORT_REPORT {file name}" ส่งออกไม่ได้แสดง [!] และไม่เขียน log
-    ดู: docs/05-contracts.md ข้อ 4
-    """
-    raise NotImplementedError("TODO(ชุด B): screen_reports")
+    print("\nจำนวนประกาศตามหมวด")
+    category_rows = []
+    for category in summary["by_category"]:
+        category_rows.append([category, summary["by_category"][category]])
+    display.print_table(["หมวด", "จำนวน"], category_rows)
+
+    print("\nจำนวนประกาศตามสถานะ")
+    status_rows = []
+    for status in summary["by_status"]:
+        status_rows.append([status, summary["by_status"][status]])
+    display.print_table(["สถานะ", "จำนวน"], status_rows)
+
+    print("\nอันดับผู้ช่วย")
+    helper_rows = []
+    for i in range(len(summary["top_helpers"])):
+        name, points, jobs = summary["top_helpers"][i]
+        helper_rows.append([i + 1, name, points, jobs])
+    display.print_table(["อันดับ", "ชื่อ", "แต้มที่ได้", "งานที่ยืนยัน"], helper_rows)
+
+
+def screen_reports(app):
+    summary = service.summarize_board(app)
+    display.print_header("สรุปสถิติของบอร์ด")
+    show_summary(summary)
+
+    if inputs.input_yes_no("ส่งออกเป็นไฟล์ .txt?"):
+        path = service.export_summary_txt(summary)
+        if path == "":
+            print("[!] ส่งออกไม่สำเร็จ ตรวจสอบสิทธิ์เขียนไฟล์ในโฟลเดอร์ reports")
+        else:
+            print("[OK] ส่งออกรายงานแล้ว: " + path)
+            storage.append_log(summary_user_id(app), "EXPORT_REPORT")
+
+    input("กด Enter เพื่อกลับเมนูหลัก")
+
+
+def summary_user_id(app):
+    return app.current_user_id
