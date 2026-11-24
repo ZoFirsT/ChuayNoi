@@ -1,11 +1,3 @@
-"""rule ของการสมัครและ login (ชุด B)
-
-ทุก function เช็กกฎให้ครบก่อน ผิดข้อไหน return (False, เหตุผล) และ app ต้องเหมือนเดิม
-ผ่านหมดค่อยแก้ data แล้ว return (True, ข้อความ) ไฟล์นี้ไม่มี input() กับ print()
-ข้อความที่ return ไม่ใส่ "[OK] " หรือ "[!] " หน้าจอเป็นคนเติม แต้มขยับผ่าน add_transaction() เท่านั้น
-ดู: docs/tasks/b-accounts-reports.md หัวข้อ register_user และ login_user
-"""
-
 from datetime import datetime
 
 from chuaynoi import config
@@ -14,24 +6,36 @@ from chuaynoi.wallet.service import add_transaction
 
 
 def register_user(app, student_id, name, faculty, skills):
-    """สมัครผู้ใช้ใหม่ แล้วให้แต้มเริ่มต้น
+    if not student_id.isdigit() or not student_id.isascii() or len(student_id) != config.STUDENT_ID_LENGTH:
+        return (
+            False,
+            f"รหัสนักศึกษาต้องเป็นตัวเลข {config.STUDENT_ID_LENGTH} หลัก",
+        )
 
-    รับ: student_id รหัสนักศึกษา, name ชื่อ-นามสกุล, faculty คณะ, skills list ของ str (เก็บตามที่ส่งมา หน้าจอแยกและตัด space ให้ก่อนเรียก)
-    คืน: (True, ข้อความสำเร็จ) หรือ (False, เหตุผล)
-    กฎ: RG1–RG4 ตามลำดับ (รหัสนักศึกษา, รหัสซ้ำ, ความยาวชื่อ, คณะใน config.FACULTIES)
-    แก้ data: เพิ่ม User ท้าย app.users กับรายการ SIGNUP ของผู้ใช้ใหม่ (ใช้ได้ +config.START_POINTS)
-        ไม่ login ให้ (ไม่ตั้ง app.current_user_id)
-    ดู: docs/tasks/b-accounts-reports.md หัวข้อ register_user
-    """
-    raise NotImplementedError("TODO(ชุด B): register_user")
+    if app.find_user(student_id) is not None:
+        return (False, "มีผู้ใช้รหัสนี้แล้ว")
+
+    if len(name) < config.NAME_MIN or len(name) > config.NAME_MAX:
+        return (
+            False,
+            f"ชื่อต้องยาว {config.NAME_MIN} ถึง {config.NAME_MAX} ตัวอักษร",
+        )
+
+    if faculty not in config.FACULTIES:
+        return (False, f"ไม่มีคณะ {faculty}")
+
+    created_at = datetime.now().strftime(config.TIME_FORMAT)
+    app.users.append(User(student_id, name, faculty, skills, created_at))
+    add_transaction(
+        app, student_id, config.TXN_SIGNUP, config.START_POINTS, 0, "", "แต้มเริ่มต้น"
+    )
+    return (True, f"สมัครสำเร็จ ได้รับ {config.START_POINTS} แต้ม")
 
 
 def login_user(app, student_id):
-    """ตั้งผู้ใช้ที่ login อยู่ตามรหัสนักศึกษา (function ช่วย)
+    user = app.find_user(student_id)
+    if user is None:
+        return (False, "ไม่พบรหัสนักศึกษานี้ กรุณาสมัครก่อน")
 
-    รับ: student_id รหัสนักศึกษา
-    คืน: (True, ข้อความทักทาย) ถ้าเจอผู้ใช้ หรือ (False, เหตุผล) ถ้าไม่เจอ
-    แก้ data: ถ้าเจอ ตั้ง app.current_user_id เป็น student_id ถ้าไม่เจอไม่แก้อะไร
-    ดู: docs/tasks/b-accounts-reports.md หัวข้อ login_user
-    """
-    raise NotImplementedError("TODO(ชุด B): login_user")
+    app.current_user_id = student_id
+    return (True, f"สวัสดี {user.name}")
