@@ -57,7 +57,7 @@ def screen_login(app):
 def split_skills(text):
     skills = []
     for part in text.split(","):
-        part = part.strip().replace(config.SKILL_SEPARATOR, " ")
+        part = part.strip()
         if part != "":
             skills.append(part)
     return skills

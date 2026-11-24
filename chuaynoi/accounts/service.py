@@ -6,7 +6,7 @@ from chuaynoi.wallet.service import add_transaction
 
 
 def register_user(app, student_id, name, faculty, skills):
-    if not student_id.isdigit() or len(student_id) != config.STUDENT_ID_LENGTH:
+    if not student_id.isdigit() or not student_id.isascii() or len(student_id) != config.STUDENT_ID_LENGTH:
         return (
             False,
             f"รหัสนักศึกษาต้องเป็นตัวเลข {config.STUDENT_ID_LENGTH} หลัก",
@@ -22,7 +22,7 @@ def register_user(app, student_id, name, faculty, skills):
         )
 
     if faculty not in config.FACULTIES:
-        return (False, "คณะที่เลือกไม่อยู่ในรายการ")
+        return (False, f"ไม่มีคณะ {faculty}")
 
     created_at = datetime.now().strftime(config.TIME_FORMAT)
     app.users.append(User(student_id, name, faculty, skills, created_at))

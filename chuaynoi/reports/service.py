@@ -20,7 +20,7 @@ def summarize_board(app):
         total_reward += request.reward
 
     if len(app.requests) == 0:
-        avg_reward = 0
+        avg_reward = 0.0
     else:
         avg_reward = round(total_reward / len(app.requests), 2)
 
@@ -76,10 +76,10 @@ def build_report_lines(summary, created_at):
         "รายงานสรุป ChuayNoi",
         "สร้างเมื่อ " + created_at,
         "=" * 40,
-        f"ผู้ใช้ทั้งหมด            {summary['total_users']} คน",
-        f"ประกาศทั้งหมด           {summary['total_requests']} รายการ",
-        f"แต้มที่โอนให้ผู้ช่วยแล้ว   {summary['points_paid']} แต้ม",
-        f"แต้มเฉลี่ยต่อคน          {summary['avg_reward']} แต้ม",
+        f"ผู้ใช้ทั้งหมด {summary['total_users']} คน",
+        f"ประกาศทั้งหมด {summary['total_requests']} รายการ",
+        f"แต้มที่โอนให้ผู้ช่วยแล้ว {summary['points_paid']} แต้ม",
+        f"แต้มต่อคนเฉลี่ยต่อประกาศ {summary['avg_reward']} แต้ม",
         "",
         "จำนวนประกาศตามหมวด",
     ]
@@ -87,14 +87,12 @@ def build_report_lines(summary, created_at):
         lines.append(f"  {category}   {summary['by_category'][category]}")
 
     lines.append("")
-    lines.append("จำนวนประกาศตามสถานะ")
+    lines.append("จำนวนประกาศตาม status")
     for status in summary["by_status"]:
         lines.append(f"  {status}   {summary['by_status'][status]}")
 
     lines.append("")
     lines.append("อันดับผู้ช่วย")
-    if len(summary["top_helpers"]) == 0:
-        lines.append("  ยังไม่มีข้อมูล")
     for i in range(len(summary["top_helpers"])):
         name, points, jobs = summary["top_helpers"][i]
         lines.append(f"  {i + 1}. {name}   {points} แต้ม   {jobs} งาน")
