@@ -156,12 +156,12 @@ action ที่ใช้ใน log: `REGISTER`, `LOGIN`, `CREATE_REQUEST`, `APP
 
 - `display_width(text)` วนทีละตัวอักษร ถ้า `unicodedata.category(ch)` เป็น `Mn` นับ 0 ถ้า `unicodedata.east_asian_width(ch)` เป็น `W` หรือ `F` นับ 2 ที่เหลือนับ 1 สระบน/ล่างกับวรรณยุกต์ไม่กินที่บนจอ ตารางเลยตรงแม้มีภาษาไทย
 - `print_table(headers, rows)` ความกว้าง column คือ `display_width` ที่มากสุดใน column นั้น ตัวเลขชิดขวา ไม่ตัดข้อความ ถ้า `rows` ว่างพิมพ์ `[i] ไม่มีข้อมูล`
-- `print_header(title, subtitle="")` เส้น `=` กว้าง `config.SCREEN_WIDTH` แล้ว title และ subtitle (ถ้าไม่ว่าง)
+- `print_header(title, subtitle="")` เรียก `clear_screen()` ล้างจอก่อน (`cls` บน Windows, `clear` บนเครื่องอื่น) แล้วพิมพ์เส้น `=` กว้าง `config.SCREEN_WIDTH` ตามด้วย title และ subtitle (ถ้าไม่ว่าง) ทุกหน้าจอเลยขึ้นบนจอเปล่า ไม่มีของหน้าก่อนค้าง
 - `print_menu(options, zero_label)` พิมพ์ `[1]` ถึง `[n]` ตาม `options` แล้ว `[0] {zero_label}` ปิดด้วยเส้น `-` ใช้กับเมนูทุกหน้า
 
 ### app.py
 
-- `run()` เรียก `load_all()` ใน `try … except KeyboardInterrupt` ของตัวเอง กด Ctrl+C ตอนกำลังโหลด จะพิมพ์บรรทัดว่างแล้วออกเลยโดยไม่ save เพราะข้อมูลยังโหลดไม่ครบ ถ้า save จะเขียนทับไฟล์ด้วยข้อมูลที่ไม่ครบ โหลดเสร็จแล้วถ้ามีแถวที่ข้าม พิมพ์ `[i] ข้าม {N} แถวที่อ่านไม่ผ่าน` จากนั้นวน `start_screen` แล้ว `main_menu` จนกว่าจะเลือกออก ลูปนี้ครอบด้วย `try … except KeyboardInterrupt` กด Ctrl+C ที่ไหนข้างใน จะพิมพ์บรรทัดว่างแล้ว `save_all` ได้ผลแล้วพิมพ์ `[OK] บันทึกข้อมูลแล้ว` ไม่ได้ผลพิมพ์ `[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน` เหมือนเลือก `[0] บันทึกและออก`
+- `run()` เรียก `load_all()` ใน `try … except KeyboardInterrupt` ของตัวเอง กด Ctrl+C ตอนกำลังโหลด จะพิมพ์บรรทัดว่างแล้วออกเลยโดยไม่ save เพราะข้อมูลยังโหลดไม่ครบ ถ้า save จะเขียนทับไฟล์ด้วยข้อมูลที่ไม่ครบ โหลดเสร็จแล้ววน `start_screen` แล้ว `main_menu` จนกว่าจะเลือกออก `start_screen` พิมพ์ header ครั้งเดียวตอนเข้าหน้า ถ้ามีแถวที่ข้ามพิมพ์ `[i] ข้าม {N} แถวที่อ่านไม่ผ่าน` ใต้ header แล้วค่อยวนเมนู login หรือสมัครไม่ผ่าน ข้อความ `[!]` เลยยังอยู่บนจอ ไม่โดนล้าง ลูปนี้ครอบด้วย `try … except KeyboardInterrupt` กด Ctrl+C ที่ไหนข้างใน จะพิมพ์บรรทัดว่างแล้ว `save_all` ได้ผลแล้วพิมพ์ `[OK] บันทึกข้อมูลแล้ว` ไม่ได้ผลพิมพ์ `[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน` เหมือนเลือก `[0] บันทึกและออก`
 - `start_screen(app)` ใช้ `inputs.input_int` ให้เลือก เข้าสู่ระบบ สมัคร หรือออก แล้วเรียก `accounts_menu.screen_login` หรือ `screen_register` คืน `True` เมื่อ login สำเร็จ `False` เมื่อเลือกออก
 - `main_menu(app)` โชว์ชื่อกับยอดแต้มล่าสุดทุกครั้งที่กลับจากหน้าจอ แล้วเรียกหน้าจอตามเลขที่เลือก (`board_menu.screen_board`, `screen_post`, `screen_my_requests`, `screen_my_jobs`, `wallet_menu.screen_wallet`, `reports_menu.screen_reports`) คืน `"exit"` หรือ `"logout"`
 

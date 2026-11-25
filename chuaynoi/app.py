@@ -34,7 +34,6 @@ def run():
     คืน: ไม่คืนค่า
     แก้ data: ตอนจบ (เลือกออก หรือกด Ctrl+C ในหน้าแรกหรือเมนูหลัก) เรียก storage.save_all(app)
         สำเร็จ print "[OK] บันทึกข้อมูลแล้ว" ไม่สำเร็จ print "[!] บันทึกข้อมูลไม่สำเร็จ ถ้าเปิดไฟล์ใน Excel ค้างไว้ให้ปิดก่อน"
-        ถ้า load ข้ามแถวไป print "[i] ข้าม {n} แถวที่อ่านไม่ผ่าน" ก่อนเข้าหน้าแรก
         เมื่อ main_menu คืน "logout" เคลียร์ app.current_user_id เป็น "" แล้วกลับหน้าแรก
     error: Ctrl+C ตอน load_all() ถูกจับด้วย try แยก print บรรทัดว่างแล้วออกเลยโดยไม่ save
             (ข้อมูลยังโหลดไม่ครบ ถ้า save จะเขียนทับไฟล์ด้วยข้อมูลไม่ครบ)
@@ -47,9 +46,6 @@ def run():
     except KeyboardInterrupt:
         print()
         return
-
-    if app.skipped_rows > 0:
-        print(f"[i] ข้าม {app.skipped_rows} แถวที่อ่านไม่ผ่าน")
 
     try:
         while True:
@@ -71,14 +67,20 @@ def run():
 def start_screen(app):
     """แสดงหน้าแรก ให้เลือกเข้าสู่ระบบ [1] สมัคร [2] หรือออก [0] วนจนกว่าจะ login หรือเลือกออก
 
+    พิมพ์ header ครั้งเดียวตอนเข้าหน้า เพื่อให้ข้อความ [!] ตอน login หรือสมัครไม่ผ่านยังอยู่บนจอ ไม่โดนล้าง
+    ถ้า load ข้ามแถวไป พิมพ์ "[i] ข้าม {n} แถวที่อ่านไม่ผ่าน" ใต้ header
     คืน: True เมื่อ login สำเร็จ (รวมสมัครแล้ว login), False เมื่อ user เลือกออก
     แก้ data: ไม่แก้เอง screen_login กับ screen_register เป็นคนตั้ง app.current_user_id
     ดู: docs/05-contracts.md ข้อ 4
     """
+    display.print_header(
+        "ChuayNoi | หน้าแรก", "ช่วยหน่อย: บอร์ดขอความช่วยเหลือ จ่ายกันด้วยแต้มน้ำใจ"
+    )
+
+    if app.skipped_rows > 0:
+        print(f"[i] ข้าม {app.skipped_rows} แถวที่อ่านไม่ผ่าน")
+
     while True:
-        display.print_header(
-            "ChuayNoi | หน้าแรก", "ช่วยหน่อย: บอร์ดขอความช่วยเหลือ จ่ายกันด้วยแต้มน้ำใจ"
-        )
         display.print_menu(START_MENU, "ออกจากโปรแกรม")
         choice = inputs.input_int(
             f"เลือกเมนู (0-{len(START_MENU)}): ", 0, len(START_MENU)

@@ -55,7 +55,7 @@ flowchart TD
 | `list_history(app, student_id, limit=10)` | ใหม่สุดก่อน ไม่เกิน `limit` รายการ |
 | `storage.save_all(app)` | เขียนทับ users, requests, engagements คืน `True` หรือ `False` ไม่เคยปล่อย `OSError` |
 | `storage.append_log(student_id, action)` | ต่อท้าย `[YYYY-MM-DD HH:MM] {student_id} {action}` ถ้าเขียนไม่ได้พิมพ์ `[!] ไม่สามารถเขียน log ได้: {บรรทัดนั้น}` ไม่ปล่อย `OSError` |
-| `display.print_header(title, subtitle="")` | เส้น `=` ยาว 64, ` {title}`, ` {subtitle}` ถ้าไม่ว่าง แล้วเส้น `=` อีกเส้น |
+| `display.print_header(title, subtitle="")` | ล้างจอก่อน (`cls` บน Windows, `clear` บนเครื่องอื่น) แล้วพิมพ์เส้น `=` ยาว 64, ` {title}`, ` {subtitle}` ถ้าไม่ว่าง แล้วเส้น `=` อีกเส้น |
 | `display.print_menu(options, zero_label)` | ` [1] …` ถึง ` [n] …` แล้ว ` [0] {zero_label}` แล้วเส้น `-` ยาว 64 |
 | `display.print_table(headers, rows)` | ตารางมีเส้นขอบ จัด column ด้วย `display_width` ตัวเลขชิดขวา ไม่ตัดข้อความ ถ้า `rows` ว่างพิมพ์ `[i] ไม่มีข้อมูล` |
 | `display.display_width(text)` | อักขระ category `Mn` ได้ 0, ตัวกว้าง `W`/`F` ได้ 2, ที่เหลือ 1 |
@@ -83,7 +83,7 @@ feature ระดับ Could คือ `REVISION` กับ `WITHDRAWN` ตอ�
 
 กฎกลางของทุกหน้าจอ
 - SC1 login กับ register ทำงานตอน `app.current_user_id == ""` หน้าจออื่นทำงานตอนมีคน login อยู่ ไม่ต้องเช็กซ้ำ
-- SC2 หน้าจอที่เรียกจากเมนูหลักเริ่มด้วย `display.print_header(title)` โดย title มาจากตารางหน้าจอด้านล่าง (subtitle ใส่เพิ่มได้) login กับ register ไม่พิมพ์ header เพราะหน้าแรกเพิ่งพิมพ์ไป มีแค่เมนูหลักกับกระเป๋าแต้มที่โชว์ชื่อผู้ใช้กับยอด
+- SC2 หน้าจอที่เรียกจากเมนูหลักเริ่มด้วย `display.print_header(title)` โดย title มาจากตารางหน้าจอด้านล่าง (subtitle ใส่เพิ่มได้) login กับ register ไม่พิมพ์ header เพราะหน้าแรกเพิ่งพิมพ์ไป มีแค่เมนูหลักกับกระเป๋าแต้มที่โชว์ชื่อผู้ใช้กับยอด `print_header` ล้างจอก่อนพิมพ์ ข้อความที่พิมพ์ก่อนเรียกจะหายไป เลยเรียกได้แค่ครั้งเดียวตอนเริ่มหน้าจอ
 - SC3 ทุกค่าที่ผู้ใช้พิมพ์ต้องผ่าน `ui.inputs` `input()` ตัวเปล่ามีได้ที่เดียวคือรอ Enter ตอนจบ `input("กด Enter เพื่อกลับเมนูหลัก")` พิมพ์หลังบรรทัดผลลัพธ์ บรรทัด `[i]` หรือการยกเลิก ก่อน return ถ้าผู้ใช้เลือก `0` ตรงไหนก็กลับทันทีโดยไม่รอ Enter (`screen_my_requests` เลือก `0` ที่ระดับไหนก็กลับเมนูหลัก) login กับ register ไม่รอ Enter
 - SC4 หนึ่งครั้งที่เข้าหน้าจอ ทำหนึ่ง action
 - SC5 สำเร็จ (`True`) พิมพ์ `"[OK] " + message` ไม่สำเร็จ (`False`) พิมพ์ `"[!] " + message` ข้อมูลทั่วไปขึ้นต้น `"[i] "`
