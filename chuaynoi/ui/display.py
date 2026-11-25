@@ -5,6 +5,7 @@
 ดู: docs/05-contracts.md ข้อ 2
 """
 
+import os
 import unicodedata
 
 from chuaynoi import config
@@ -83,8 +84,17 @@ def print_table(headers, rows):
     print(border)
 
 
+def clear_screen():
+    """ล้างหน้าจอ (function ช่วย)"""
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
+
+
 def print_header(title, subtitle=""):
-    """พิมพ์หัวหน้าจอ: เส้น "=" ยาว config.SCREEN_WIDTH, ชื่อหน้า, บรรทัดรอง (ถ้าไม่ว่าง), แล้วปิดด้วยเส้น "=" (function ช่วย)"""
+    """ล้างจอแล้วพิมพ์หัวหน้าจอ: เส้น "=" ยาว config.SCREEN_WIDTH, ชื่อหน้า, บรรทัดรอง (ถ้าไม่ว่าง), แล้วปิดด้วยเส้น "=" (function ช่วย)"""
+    clear_screen()
     line = "=" * config.SCREEN_WIDTH
     print(line)
     print(" " + title)
