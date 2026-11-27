@@ -10,6 +10,21 @@ from chuaynoi import config
 SORT_OPTIONS = ("newest", "reward_high", "reward_low", "minutes_short")
 
 
+def created_at_of(request):
+    """คืน created_at ของ HelpRequest (str) เพื่อใช้เป็น key ในการ sort (function ช่วย)"""
+    return request.created_at
+
+
+def reward_of(request):
+    """คืน reward ของ HelpRequest (int) เพื่อใช้เป็น key ในการ sort (function ช่วย)"""
+    return request.reward
+
+
+def minutes_of(request):
+    """คืน minutes ของ HelpRequest (int) เพื่อใช้เป็น key ในการ sort (function ช่วย)"""
+    return request.minutes
+
+
 def search_requests(requests, keyword="", category="", min_reward=0,
                     only_open=True, sort_by="newest"):
     """กรองและเรียงประกาศตามเงื่อนไขที่ให้
@@ -24,4 +39,22 @@ def search_requests(requests, keyword="", category="", min_reward=0,
     แก้ data: ไม่แก้ requests ที่ส่งมา ไม่แตะ app กับไฟล์
     ดู: docs/tasks/a-board.md หัวข้อ search_requests
     """
-    raise NotImplementedError("TODO(ชุด A): search_requests")
+    results = []
+    for request in requests:
+        if only_open and request.status != config.REQ_OPEN:
+            continue
+        if category != "" and request.category != category:
+            continue
+        if request.reward < min_reward:
+            continue
+        text = (request.title + " " + request.detail).lower()
+        if keyword != "" and keyword.lower() not in text:
+            continue
+        results.append(request)
+    if sort_by == "newest":
+        return sorted(results, key=created_at_of, reverse=True)
+    if sort_by == "reward_high":
+        return sorted(results, key=reward_of, reverse=True)
+    if sort_by == "reward_low":
+        return sorted(results, key=reward_of, reverse=False)
+    return sorted(results, key=minutes_of, reverse=False)
