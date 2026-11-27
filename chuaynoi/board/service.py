@@ -24,7 +24,36 @@ def create_request(app, owner_id, title, detail, category, reward, slots, minute
         และรายการ HOLD ของผู้ขอ (ใช้ได้ -cost, กันไว้ +cost)
     ดู: docs/tasks/a-board.md หัวข้อ create_request
     """
-    raise NotImplementedError("TODO(ชุด A): create_request")
+    text = title + " " + detail
+    for word in config.BANNED_WORDS:
+        if word in text:
+            return (False, f"ประกาศนี้ขอให้ทำงานแทน ผิดกติกา 'ช่วยได้ ไม่ทำแทน'")
+    if category not in config.CATEGORIES:
+        return (False, f"ไม่มีหมวด {category}")
+    if not (config.REWARD_MIN <= reward <= config.REWARD_MAX):
+        return (False, f"แต้มต่อคนต้องอยู่ระหว่าง {config.REWARD_MIN} ถึง {config.REWARD_MAX}")
+    if not (config.SLOTS_MIN <= slots <= config.SLOTS_MAX):
+        return (False, f"จำนวนผู้ช่วยต้องอยู่ระหว่าง {config.SLOTS_MIN} ถึง {config.SLOTS_MAX}")
+    if not (config.MINUTES_MIN <= minutes <= config.MINUTES_MAX):
+        return (
+            False,
+            f"เวลาต้องอยู่ระหว่าง {config.MINUTES_MIN} ถึง {config.MINUTES_MAX} นาที",
+        )
+    if not (config.TITLE_MIN <= len(title) <= config.TITLE_MAX):
+        return (False, f"หัวข้อต้องยาว {config.TITLE_MIN} ถึง {config.TITLE_MAX} ตัวอักษร")
+    if not (config.DETAIL_MIN <= len(detail) <= config.DETAIL_MAX):
+        return (False, f"รายละเอียดต้องไม่เกิน {config.DETAIL_MAX} ตัวอักษร")
+    cost = reward * slots
+    availble, held = get_balance(app, owner_id)
+    if availble < cost:
+        return (False, f"แต้มไม่พอ ต้องใช้ {cost} มี {availble}")
+
+    request_id = app.next_id("R", [r.request_id for r in app.requests], 4)
+    now = datetime.now().strftime(config.TIME_FORMAT)
+    request = HelpRequest(request_id, owner_id, title, detail, category, reward, slots, minutes, config.REQ_OPEN, now)
+    app.requests.append(request)
+    add_transaction(app, owner_id, config.TXN_HOLD, -cost, cost, request_id, f"กันแต้ม {reward} x {slots} คน")
+    return (True, f"โพสต์ประกาศ {request_id} แล้ว กันแต้มไว้ {cost} แต้ม")
 
 
 def apply_to_request(app, helper_id, request_id):
@@ -36,8 +65,28 @@ def apply_to_request(app, helper_id, request_id):
     แก้ data: เพิ่ม Engagement status ACCEPTED ท้าย app.engagements แต้มไม่ขยับ
     ดู: docs/tasks/a-board.md หัวข้อ apply_to_request
     """
-    raise NotImplementedError("TODO(ชุด A): apply_to_request")
+    request = app.find_request(request_id)
+    if request is None:
+        return(False, "ไม่พบประกาศ")
+    if request.status != config.REQ_OPEN:
+        return(False, "ประกาศนี้ปิดรับแล้ว")
+    if request.owner_id == helper_id:
+        return(False, "ช่วยงานของตัวเองไม่ได้")
+    for eng in app.engagements:
+        if eng.request_id == request_id and eng.helper_id == helper_id and eng.status != config.ENG_WITHDRAWN:
+            return(False, "คุณรับงานนี้ไปแล้ว")
+    if request.count_used_slots(app.engagements) >= request.slots:
+        return(False, "ที่เต็มแล้ว")
+    engagement_id = app.next_id("E", [e.engagement_id for e in app.engagements], 4)
+    now = datetime.now().strftime(config.TIME_FORMAT)
+    engagement = Engagement(engagement_id, request_id, helper_id, config.ENG_ACCEPTED, "", 0, now)
+    app.engagements.append(engagement)
+    return (True, f"รับงาน {request_id} แล้ว รหัสงานของคุณคือ {engagement_id}")
 
+  
+
+    
+    return (True, f"รับงาน {request_id} แล้ว รหัสงานของคุณคือ {engagement_id}")
 
 def submit_work(app, helper_id, engagement_id, result):
     """ผู้ช่วยส่งผลงานของงานที่รับไว้
