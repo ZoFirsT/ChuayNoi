@@ -27,7 +27,7 @@ def create_request(app, owner_id, title, detail, category, reward, slots, minute
     text = title + " " + detail
     for word in config.BANNED_WORDS:
         if word in text:
-            return (False, f"ประกาศนี้ขอให้ทำงานแทน ผิดกติกา 'ช่วยได้ ไม่ทำแทน'")
+            return (False, "ประกาศนี้ขอให้ทำงานแทน ผิดกติกา 'ช่วยได้ ไม่ทำแทน'")
     if category not in config.CATEGORIES:
         return (False, f"ไม่มีหมวด {category}")
     if not (config.REWARD_MIN <= reward <= config.REWARD_MAX):
@@ -44,9 +44,9 @@ def create_request(app, owner_id, title, detail, category, reward, slots, minute
     if not (config.DETAIL_MIN <= len(detail) <= config.DETAIL_MAX):
         return (False, f"รายละเอียดต้องไม่เกิน {config.DETAIL_MAX} ตัวอักษร")
     cost = reward * slots
-    availble, held = get_balance(app, owner_id)
-    if availble < cost:
-        return (False, f"แต้มไม่พอ ต้องใช้ {cost} มี {availble}")
+    available, held = get_balance(app, owner_id)
+    if available < cost:
+        return (False, f"แต้มไม่พอ ต้องใช้ {cost} มี {available}")
 
     request_id = app.next_id("R", [r.request_id for r in app.requests], 4)
     now = datetime.now().strftime(config.TIME_FORMAT)
@@ -67,26 +67,22 @@ def apply_to_request(app, helper_id, request_id):
     """
     request = app.find_request(request_id)
     if request is None:
-        return(False, "ไม่พบประกาศ")
+        return (False, "ไม่พบประกาศ")
     if request.status != config.REQ_OPEN:
-        return(False, "ประกาศนี้ปิดรับแล้ว")
+        return (False, "ประกาศนี้ปิดรับแล้ว")
     if request.owner_id == helper_id:
-        return(False, "ช่วยงานของตัวเองไม่ได้")
+        return (False, "ช่วยงานของตัวเองไม่ได้")
     for eng in app.engagements:
         if eng.request_id == request_id and eng.helper_id == helper_id and eng.status != config.ENG_WITHDRAWN:
-            return(False, "คุณรับงานนี้ไปแล้ว")
+            return (False, "คุณรับงานนี้ไปแล้ว")
     if request.count_used_slots(app.engagements) >= request.slots:
-        return(False, "ที่เต็มแล้ว")
+        return (False, "ที่เต็มแล้ว")
     engagement_id = app.next_id("E", [e.engagement_id for e in app.engagements], 4)
     now = datetime.now().strftime(config.TIME_FORMAT)
     engagement = Engagement(engagement_id, request_id, helper_id, config.ENG_ACCEPTED, "", 0, now)
     app.engagements.append(engagement)
     return (True, f"รับงาน {request_id} แล้ว รหัสงานของคุณคือ {engagement_id}")
 
-  
-
-    
-    return (True, f"รับงาน {request_id} แล้ว รหัสงานของคุณคือ {engagement_id}")
 
 def submit_work(app, helper_id, engagement_id, result):
     """ผู้ช่วยส่งผลงานของงานที่รับไว้
@@ -99,16 +95,16 @@ def submit_work(app, helper_id, engagement_id, result):
     """
     engagement = app.find_engagement(engagement_id)
     if engagement is None or engagement.helper_id != helper_id:
-        return(False, "ไม่พบงานนี้ในงานที่คุณรับไว้")
+        return (False, "ไม่พบงานนี้ในงานที่คุณรับไว้")
     if not (config.RESULT_MIN <= len(result.strip()) <= config.RESULT_MAX):
-        return(False, f"ผลงานต้องยาว {config.RESULT_MIN} ถึง {config.RESULT_MAX} ตัวอักษร")
+        return (False, f"ผลงานต้องยาว {config.RESULT_MIN} ถึง {config.RESULT_MAX} ตัวอักษร")
     if engagement.status not in (config.ENG_ACCEPTED, config.ENG_REVISION):
         return (False, f"ส่งงานนี้ไม่ได้ เพราะ status ตอนนี้คือ {engagement.status}")
 
     engagement.change_status(config.ENG_SUBMITTED)
     engagement.result = result.strip()
     engagement.updated_at = datetime.now().strftime(config.TIME_FORMAT)
-    return(True, f"ส่งงาน {engagement_id} แล้ว รอผู้ขอยืนยัน")
+    return (True, f"ส่งงาน {engagement_id} แล้ว รอผู้ขอยืนยัน")
 
 
 def approve_work(app, owner_id, engagement_id):
@@ -124,12 +120,12 @@ def approve_work(app, owner_id, engagement_id):
     """
     engagement = app.find_engagement(engagement_id)
     if engagement is None:
-        return(False, "ไม่พบงานในประกาศของคุณ")
+        return (False, "ไม่พบงานนี้ในประกาศของคุณ")
     request = app.find_request(engagement.request_id)
     if request is None or request.owner_id != owner_id:
-        return(False, "ไม่พบงานในประกาศของคุณ")
+        return (False, "ไม่พบงานนี้ในประกาศของคุณ")
     if engagement.status != config.ENG_SUBMITTED:
-        return(False, "ยืนยันได้เฉพาะงานที่ส่งแล้ว")
+        return (False, "ยืนยันได้เฉพาะงานที่ส่งแล้ว")
 
     engagement.change_status(config.ENG_APPROVED)
     engagement.updated_at = datetime.now().strftime(config.TIME_FORMAT)
@@ -147,24 +143,24 @@ def approve_work(app, owner_id, engagement_id):
 
     helper = app.find_user(engagement.helper_id)
     helper_name = helper.name if helper else engagement.helper_id
-    return(True, f"ยืนยันงานแล้ว โอน {request.reward} แต้มให้ {helper_name}")
+    return (True, f"ยืนยันงานแล้ว โอน {request.reward} แต้มให้ {helper_name}")
 
 
 def close_request(app, owner_id, request_id):
-    """ผู้ขอปิดรับผู้ช่วย แล้วคืนแต้มของslot ที่ไม่มีใครรับ
+    """ผู้ขอปิดรับผู้ช่วย แล้วคืนแต้มของ slot ที่ไม่มีใครรับ
 
     รับ: owner_id รหัสผู้ขอ, request_id รหัสประกาศ
     คืน: (True, ข้อความสำเร็จ) หรือ (False, เหตุผล)
     กฎ: CL1–CL2 ตามลำดับ
-    แก้ data: ถ้ามีslot ที่ไม่ได้ใช้ เพิ่มรายการ REFUND ของผู้ขอ (ใช้ได้ +refund, กันไว้ -refund)
+    แก้ data: ถ้ามี slot ที่ไม่ได้ใช้ เพิ่มรายการ REFUND ของผู้ขอ (ใช้ได้ +refund, กันไว้ -refund)
         status ประกาศเป็น CANCELLED (ไม่มีใครรับเลย), COMPLETED (ไม่เหลืองานค้าง) หรือ CLOSED (ยังมีงานค้าง)
     ดู: docs/tasks/a-board.md หัวข้อ close_request
     """
     request = app.find_request(request_id)
     if request is None or request.owner_id != owner_id:
-        return(False, "ไม่พบประกาศนี้ในประกาศของคุณ")
+        return (False, "ไม่พบประกาศนี้ในประกาศของคุณ")
     if request.status != config.REQ_OPEN:
-        return(False, "ปิดรับได้เฉพาะประกาศที่เปิดอยู่")
+        return (False, "ปิดรับได้เฉพาะประกาศที่เปิดอยู่")
     used = request.count_used_slots(app.engagements)
     unused = request.slots - used
     refund = unused * request.reward
