@@ -122,7 +122,32 @@ def approve_work(app, owner_id, engagement_id):
         ประกาศเปลี่ยนเป็น COMPLETED
     ดู: docs/tasks/a-board.md หัวข้อ approve_work
     """
-    raise NotImplementedError("TODO(ชุด A): approve_work")
+    engagement = app.find_engagement(engagement_id)
+    if engagement is None:
+        return(False, "ไม่พบงานในประกาศของคุณ")
+    request = app.find_request(engagement.request_id)
+    if request is None or request.owner_id != owner_id:
+        return(False, "ไม่พบงานในประกาศของคุณ")
+    if engagement.status != config.ENG_SUBMITTED:
+        return(False, "ยืนยันได้เฉพาะงานที่ส่งแล้ว")
+
+    engagement.change_status(config.ENG_APPROVED)
+    engagement.updated_at = datetime.now().strftime(config.TIME_FORMAT)
+
+    add_transaction(app, owner_id, config.TXN_PAY, 0, -request.reward, request.request_id, f"จ่ายให้ {engagement_id}")
+    add_transaction(app, engagement.helper_id, config.TXN_EARN, request.reward, 0, request.request_id, f"ได้รับจาก {request.request_id}")
+
+    has_active = False
+    for eng in app.engagements:
+        if eng.request_id == request.request_id and eng.status in config.ACTIVE_ENGAGEMENT_STATUSES:
+            has_active = True
+            break
+    if not has_active and (request.status == config.REQ_CLOSED or request.count_used_slots(app.engagements) >= request.slots):
+        request.status = config.REQ_COMPLETED
+
+    helper = app.find_user(engagement.helper_id)
+    helper_name = helper.name if helper else engagement.helper_id
+    return(True, f"ยืนยันงานแล้ว โอน {request.reward} แต้มให้ {helper_name}")
 
 
 def close_request(app, owner_id, request_id):
