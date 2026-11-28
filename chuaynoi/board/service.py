@@ -97,7 +97,18 @@ def submit_work(app, helper_id, engagement_id, result):
     แก้ data: engagement เปลี่ยนเป็น SUBMITTED เก็บ result กับ updated_at แต้มไม่ขยับ
     ดู: docs/tasks/a-board.md หัวข้อ submit_work
     """
-    raise NotImplementedError("TODO(ชุด A): submit_work")
+    engagement = app.find_engagement(engagement_id)
+    if engagement is None or engagement.helper_id != helper_id:
+        return(False, "ไม่พบงานนี้ในงานที่คุณรับไว้")
+    if not (config.RESULT_MIN <= len(result.strip()) <= config.RESULT_MAX):
+        return(False, f"ผลงานต้องยาว {config.RESULT_MIN} ถึง {config.RESULT_MAX} ตัวอักษร")
+    if engagement.status not in (config.ENG_ACCEPTED, config.ENG_REVISION):
+        return (False, f"ส่งงานนี้ไม่ได้ เพราะ status ตอนนี้คือ {engagement.status}")
+
+    engagement.change_status(config.ENG_SUBMITTED)
+    engagement.result = result.strip()
+    engagement.updated_at = datetime.now().strftime(config.TIME_FORMAT)
+    return(True, f"ส่งงาน {engagement_id} แล้ว รอผู้ขอยืนยัน")
 
 
 def approve_work(app, owner_id, engagement_id):
