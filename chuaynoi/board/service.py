@@ -160,4 +160,28 @@ def close_request(app, owner_id, request_id):
         status ประกาศเป็น CANCELLED (ไม่มีใครรับเลย), COMPLETED (ไม่เหลืองานค้าง) หรือ CLOSED (ยังมีงานค้าง)
     ดู: docs/tasks/a-board.md หัวข้อ close_request
     """
-    raise NotImplementedError("TODO(ชุด A): close_request")
+    request = app.find_request(request_id)
+    if request is None or request.owner_id != owner_id:
+        return(False, "ไม่พบประกาศนี้ในประกาศของคุณ")
+    if request.status != config.REQ_OPEN:
+        return(False, "ปิดรับได้เฉพาะประกาศที่เปิดอยู่")
+    used = request.count_used_slots(app.engagements)
+    unused = request.slots - used
+    refund = unused * request.reward
+    if unused > 0:
+        add_transaction(app, owner_id, config.TXN_REFUND, refund, -refund, request_id, f"คืนที่ว่าง {unused} ที่")
+
+    has_active = False
+    for eng in app.engagements:
+        if eng.request_id == request_id and eng.status in config.ACTIVE_ENGAGEMENT_STATUSES:
+            has_active = True
+            break
+
+    if used == 0:
+        request.status = config.REQ_CANCELLED
+    elif not has_active:
+        request.status = config.REQ_COMPLETED
+    else:
+        request.status = config.REQ_CLOSED
+
+    return (True, f"ปิดรับ {request_id} แล้ว คืน {refund} แต้ม")
